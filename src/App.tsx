@@ -1,9 +1,9 @@
 import React from 'react';
 import { BrowserRouter, Route, Redirect, Switch } from 'react-router-dom';
 import './App.css';
-import AuthPage from './pages/Auth';
-import EventsPage from './pages/Events';
-import BookingsPage from './pages/Bookings';
+import AuthPage from './components/Auth/Auth';
+import EventsPage from './components/Events/Events';
+import BookingsPage from './components/Bookings/Bookings';
 
 const App = () => {
     return (

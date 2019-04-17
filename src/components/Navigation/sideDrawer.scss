@@ -1,0 +1,42 @@
+.side-drawer {
+    height: 100%;
+    background: white;
+    box-shadow: 2px 0 5px rgba(0, 0, 0, 0.5);
+    top: 0;
+    left: 0;
+    width: 70%;
+    max-width: 400px;
+    position: fixed;
+    z-index: 200;
+
+    nav {
+        margin-top: 3rem;
+    }
+
+    ul {
+        list-style: none;
+    }
+    li {
+        /* !supports flex*/
+        display: block;
+
+        margin: 1rem;
+    }
+    a {
+        text-decoration: none;
+        color: purple;
+        &:hover,
+        &:active,
+        &.active {
+            color: rgb(167, 110, 4);
+        }
+    }
+}
+
+@supports (display: flex) {
+    .side-drawer {
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+    }
+}

@@ -5,6 +5,9 @@ body {
         'Droid Sans', 'Helvetica Neue', sans-serif;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
+    font-size: 20px;
+    font-size: calc(16px + (20 - 16) * (100vw - 400px) / (1200 - 400));
+    // (minFont[px] + (maxFont - minFont) * (100vw - minScreen[px]) / (maxScreen - minScreen))
 }
 
 code {

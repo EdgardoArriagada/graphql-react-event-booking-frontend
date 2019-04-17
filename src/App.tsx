@@ -4,20 +4,26 @@ import AuthPage from './components/Auth/Auth';
 import EventsPage from './components/Events/Events';
 import BookingsPage from './components/Bookings/Bookings';
 import MainNavigation from './components/Navigation/MainNavigation';
-import './App.scss';
+import './app.scss';
+import SideDrawer from './components/Navigation/SideDrawer';
+import Backdrop from './components/backdrop/Backdrop';
 
 const App = () => (
-    <BrowserRouter>
-        <MainNavigation />
-        <main className="main-content">
-            <Switch>
-                <Redirect from="/" to="/auth" exact />
-                <Route path="/auth" component={AuthPage} />
-                <Route path="/events" component={EventsPage} />
-                <Route path="/bookings" component={BookingsPage} />
-            </Switch>
-        </main>
-    </BrowserRouter>
+    <div className="main-content">
+        <BrowserRouter>
+            <MainNavigation />
+            <SideDrawer />
+            <Backdrop />
+            <main className="main-content">
+                <Switch>
+                    <Redirect from="/" to="/auth" exact />
+                    <Route path="/auth" component={AuthPage} />
+                    <Route path="/events" component={EventsPage} />
+                    <Route path="/bookings" component={BookingsPage} />
+                </Switch>
+            </main>
+        </BrowserRouter>
+    </div>
 );
 
 export default App;

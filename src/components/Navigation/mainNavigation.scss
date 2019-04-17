@@ -4,13 +4,14 @@
     top: 0;
     width: 100%;
     height: 3.5rem;
-    background: cyan;
-    padding: 0 1rem;
+    background: rgb(88, 1, 88);
+    padding: 0 1.5rem;
 }
 
 .main-navigation__logo {
     margin: 0;
     font-size: 1rem;
+    color: white;
     /* !supports flex*/
     h1 {
         display: inline;
@@ -21,11 +22,9 @@
     /* !supports flex*/
     display: inline-block;
 
-    margin-left: 1.5rem;
+    margin: 0 2rem;
 
     ul {
-        margin: 0 0 0 1.5rem;
-        padding: 0;
         list-style: none;
     }
     li {
@@ -36,7 +35,7 @@
     }
     a {
         text-decoration: none;
-        color: black;
+        color: white;
         &:hover,
         &:active,
         &.active {
@@ -50,11 +49,15 @@
         display: flex;
         flex-direction: row;
         align-items: center;
+        align-content: center;
+        justify-content: space-between;
         flex-wrap: wrap;
     }
 
     .main-navigation__logo {
-        flex-shrink: 2;
+        display: flex;
+        flex-direction: row;
+        align-items: center;
     }
 
     .main-navigation__items ul {

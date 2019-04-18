@@ -12,17 +12,15 @@ import { useStateValue } from './Store';
 function App() {
     const { state } = useStateValue();
 
-    let sideDrawer;
     let backdrop;
     if (state.isSideDrawOpen) {
-        sideDrawer = <SideDrawer />;
         backdrop = <Backdrop />;
     }
     return (
         <div className="main-content">
             <BrowserRouter>
                 <MainNavigation />
-                {sideDrawer}
+                <SideDrawer />
                 {backdrop}
                 <main className="main-content">
                     <Switch>

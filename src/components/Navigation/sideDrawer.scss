@@ -31,6 +31,8 @@
             color: rgb(167, 110, 4);
         }
     }
+    transform: translateX(-100%);
+    transition: transform 0.3s ease-out;
 }
 
 @supports (display: flex) {
@@ -39,4 +41,8 @@
         flex-direction: column;
         align-items: flex-start;
     }
+}
+
+.side-drawer__open {
+    transform: translateX(0);
 }

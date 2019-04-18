@@ -11,8 +11,12 @@ const reducer = (state: any, action: any) => {
     }
 };
 
+interface IState {
+    isSideDrawOpen: boolean;
+}
+
 interface IStore {
-    state: any;
+    state: IState;
     dispatch: any;
 }
 

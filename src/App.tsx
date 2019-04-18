@@ -4,20 +4,35 @@ import AuthPage from './components/Auth/Auth';
 import EventsPage from './components/Events/Events';
 import BookingsPage from './components/Bookings/Bookings';
 import MainNavigation from './components/Navigation/MainNavigation';
-import './App.scss';
+import './app.scss';
+import SideDrawer from './components/Navigation/SideDrawer';
+import Backdrop from './components/Backdrop/Backdrop';
+import { useStateValue } from './Store';
 
-const App = () => (
-    <BrowserRouter>
-        <MainNavigation />
-        <main className="main-content">
-            <Switch>
-                <Redirect from="/" to="/auth" exact />
-                <Route path="/auth" component={AuthPage} />
-                <Route path="/events" component={EventsPage} />
-                <Route path="/bookings" component={BookingsPage} />
-            </Switch>
-        </main>
-    </BrowserRouter>
-);
+function App() {
+    const { state } = useStateValue();
+
+    let backdrop;
+    if (state.isSideDrawOpen) {
+        backdrop = <Backdrop />;
+    }
+    return (
+        <div className="main-content">
+            <BrowserRouter>
+                <MainNavigation />
+                <SideDrawer />
+                {backdrop}
+                <main className="main-content">
+                    <Switch>
+                        <Redirect from="/" to="/auth" exact />
+                        <Route path="/auth" component={AuthPage} />
+                        <Route path="/events" component={EventsPage} />
+                        <Route path="/bookings" component={BookingsPage} />
+                    </Switch>
+                </main>
+            </BrowserRouter>
+        </div>
+    );
+}
 
 export default App;

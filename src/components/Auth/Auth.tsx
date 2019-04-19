@@ -1,10 +1,11 @@
-import React, { useRef } from 'react';
+import React, { useRef, useState } from 'react';
 import MuButton from '@material-ui/core/Button';
 import axios from 'axios';
 
 import './auth.scss';
 
 const AuthPage = () => {
+    const [isLoginForm, setIsLogInForm] = useState(true);
     const inputEmail = useRef({} as HTMLInputElement);
     const inputPassword = useRef({} as HTMLInputElement);
     const submitHandler = (event: React.FormEvent<HTMLFormElement>) => {
@@ -15,7 +16,7 @@ const AuthPage = () => {
             return;
         }
 
-        const requestData = {
+        const signUpData = {
             query: `
             mutation {
                 createUser(userInput: {email:"${email}", password:"${password}"}) {
@@ -25,10 +26,21 @@ const AuthPage = () => {
               }
             `,
         };
+        const loginData = {
+            query: `
+            query {
+                login(email:"${email}", password:"${password}") {
+                  userId
+                  token
+                  tokenExpiration
+                }
+              }
+            `,
+        };
         axios({
             url: 'http://localhost:3000/graphql',
             method: 'POST',
-            data: requestData,
+            data: isLoginForm ? loginData : signUpData,
             headers: {
                 'Content-Type': 'application/json',
             },
@@ -55,10 +67,11 @@ const AuthPage = () => {
             </div>
             <div className="form-actions">
                 <MuButton variant="contained" color="primary" type="submit">
-                    Submit
+                    {isLoginForm ? 'Login' : 'Signup'}
                 </MuButton>
-                <MuButton variant="contained" color="primary" type="button">
-                    Switch to Signup
+                <span />
+                <MuButton variant="contained" color="primary" type="button" onClick={_ => setIsLogInForm(!isLoginForm)}>
+                    Switch to {isLoginForm ? 'Signup' : 'Login'}
                 </MuButton>
             </div>
         </form>

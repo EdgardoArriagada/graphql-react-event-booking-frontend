@@ -1,0 +1,30 @@
+@import '../../shared/styles/material-dp.scss';
+
+.auth-page {
+    width: 300px;
+    width: 25rem;
+    max-width: 80%;
+    margin: 5rem auto;
+
+    .form-control {
+        margin-bottom: 10px;
+        margin-bottom: 1rem;
+        label,
+        input {
+            width: 100%;
+            display: block;
+        }
+
+        label {
+            margin-bottom: 10px;
+            margin-bottom: 0.5rem;
+        }
+    }
+
+    .form-actions {
+        button {
+            margin: 0.25rem 0.1rem;
+            background-color: purple;
+        }
+    }
+}

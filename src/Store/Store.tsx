@@ -1,27 +1,38 @@
 import React, { createContext, useContext, useReducer, Dispatch } from 'react';
-import { UIAction, initialUIState, uiReducer, UIState } from './Reducers/ui-reducer';
+import { UIAction, initialUIState, UIReducer, UIState, UIActionTypes } from './Reducers/ui.reducer';
+import { AuthState, initialAuthState, AuthReducer, AuthAction, AuthActionTypes } from './Reducers/auth.reducer';
 
 const initialState = {
-    uiState: { ...initialUIState },
+    UIState: { ...initialUIState },
+    AuthState: { ...initialAuthState },
 };
 
-const mainReducer = ({ uiState }: any, action: any) => ({
-    uiState: uiReducer(uiState, action),
+type MainActionTypes = UIActionTypes | AuthActionTypes;
+
+interface MainAction {
+    type: MainActionTypes;
+    payload?: any;
+}
+
+const MainReducer = ({ UIState, AuthState }: MainState, action: MainAction) => ({
+    UIState: UIReducer(UIState, action as UIAction),
+    AuthState: AuthReducer(AuthState, action as AuthAction),
 });
 
-interface State {
-    uiState: UIState;
+interface MainState {
+    UIState: UIState;
+    AuthState: AuthState;
 }
 
-interface Store {
-    state: State;
-    dispatch: Dispatch<UIAction>;
+interface MainStore {
+    state: MainState;
+    dispatch: Dispatch<MainAction>;
 }
 
-const StateContext = createContext({} as Store);
+const StateContext = createContext({} as MainStore);
 
 export const StateProvider = ({ children }: any) => {
-    const [state, dispatch] = useReducer(mainReducer, initialState);
+    const [state, dispatch] = useReducer(MainReducer, initialState);
     return <StateContext.Provider value={{ state, dispatch }}>{children}</StateContext.Provider>;
 };
 

@@ -1,5 +1,7 @@
+export type UIActionTypes = 'UI_TOGGLE_SIDE_NAV' | null;
+
 export interface UIAction {
-    type: 'TOGGLE_SIDE_NAV' | null;
+    type: UIActionTypes;
     payload?: any;
 }
 
@@ -9,11 +11,11 @@ export interface UIState {
 
 export const initialUIState = { isSideDrawOpen: false };
 
-export const uiReducer = (state: UIState, action: UIAction) => {
+export const UIReducer = (state: UIState, action: UIAction) => {
     switch (action.type) {
-        case 'TOGGLE_SIDE_NAV':
+        case 'UI_TOGGLE_SIDE_NAV':
             return { isSideDrawOpen: !state.isSideDrawOpen };
         default:
-            return initialUIState;
+            return state || initialUIState;
     }
 };

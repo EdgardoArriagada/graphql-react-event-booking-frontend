@@ -1,8 +1,12 @@
-import React, { createContext, useContext, useReducer } from 'react';
+import React, { createContext, useContext, useReducer, Dispatch } from 'react';
 
 const initialState = { isSideDrawOpen: false };
 
-const reducer = (state: any, action: any) => {
+export interface IAction {
+    type: 'TOGGLE_SIDE_NAV' | null;
+    payload?: any;
+}
+const reducer = (state: any, action: IAction) => {
     switch (action.type) {
         case 'TOGGLE_SIDE_NAV':
             return { isSideDrawOpen: !state.isSideDrawOpen };
@@ -17,7 +21,7 @@ interface IState {
 
 interface IStore {
     state: IState;
-    dispatch: any;
+    dispatch: Dispatch<IAction>;
 }
 
 const StateContext = createContext({} as IStore);

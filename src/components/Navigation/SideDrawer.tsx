@@ -5,7 +5,7 @@ import './sideDrawer.scss';
 import { useStateValue } from '../../Store/Store';
 
 const SideDrawer = () => {
-    const { UIState } = useStateValue().state;
+    const { UIState } = useStateValue();
 
     let sideDrawerClasses = ['side-drawer'];
     if (UIState.isSideDrawOpen) {

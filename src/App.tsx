@@ -10,7 +10,7 @@ import Backdrop from './components/Backdrop/Backdrop';
 import { useStateValue } from './Store/Store';
 
 function App() {
-    const { UIState } = useStateValue().state;
+    const { UIState } = useStateValue();
 
     let backdrop;
     if (UIState.isSideDrawOpen) {

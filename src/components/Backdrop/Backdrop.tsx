@@ -4,9 +4,9 @@ import './backdrop.scss';
 import { useStateValue } from '../../Store/Store';
 
 const Backdrop = () => {
-    const { dispatch } = useStateValue();
+    const { UIDisptch } = useStateValue();
     const clickHandler = () => {
-        dispatch({ type: 'UI_TOGGLE_SIDE_NAV' });
+        UIDisptch({ type: 'UI_TOGGLE_SIDE_NAV' });
     };
     return <div className="backdrop" onClick={clickHandler} />;
 };

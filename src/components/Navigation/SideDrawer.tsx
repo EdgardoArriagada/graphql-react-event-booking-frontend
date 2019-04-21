@@ -5,10 +5,10 @@ import './sideDrawer.scss';
 import { useStateValue } from '../../Store/Store';
 
 const SideDrawer = () => {
-    const { uiState } = useStateValue().state;
+    const { UIState } = useStateValue().state;
 
     let sideDrawerClasses = ['side-drawer'];
-    if (uiState.isSideDrawOpen) {
+    if (UIState.isSideDrawOpen) {
         sideDrawerClasses.push('side-drawer__open');
     }
     return (

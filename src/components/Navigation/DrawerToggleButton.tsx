@@ -6,7 +6,7 @@ import { useStateValue } from '../../Store/Store';
 const DrawerToggleButton = () => {
     const { dispatch } = useStateValue();
     const clickHandler = () => {
-        dispatch({ type: 'TOGGLE_SIDE_NAV' });
+        dispatch({ type: 'UI_TOGGLE_SIDE_NAV' });
     };
     return (
         <button className="drawer-toggle-button" onClick={clickHandler}>

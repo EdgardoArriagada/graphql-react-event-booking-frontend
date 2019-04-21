@@ -10,10 +10,10 @@ import Backdrop from './components/Backdrop/Backdrop';
 import { useStateValue } from './Store/Store';
 
 function App() {
-    const { uiState } = useStateValue().state;
+    const { UIState } = useStateValue().state;
 
     let backdrop;
-    if (uiState.isSideDrawOpen) {
+    if (UIState.isSideDrawOpen) {
         backdrop = <Backdrop />;
     }
     return (

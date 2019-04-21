@@ -6,7 +6,7 @@ import { useStateValue } from '../../Store/Store';
 const Backdrop = () => {
     const { dispatch } = useStateValue();
     const clickHandler = () => {
-        dispatch({ type: 'TOGGLE_SIDE_NAV' });
+        dispatch({ type: 'UI_TOGGLE_SIDE_NAV' });
     };
     return <div className="backdrop" onClick={clickHandler} />;
 };

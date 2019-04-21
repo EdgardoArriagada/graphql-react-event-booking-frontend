@@ -3,8 +3,11 @@ import MuButton from '@material-ui/core/Button';
 import axios from 'axios';
 
 import './auth.scss';
+import { useStateValue } from '../../Store/Store';
 
 const AuthPage = () => {
+    const { AuthDispatch } = useStateValue();
+
     const [isLoginForm, setIsLogInForm] = useState(true);
     const inputEmail = useRef({} as HTMLInputElement);
     const inputPassword = useRef({} as HTMLInputElement);
@@ -49,7 +52,15 @@ const AuthPage = () => {
                 if (res.status !== 200 && res.status !== 201) {
                     throw new Error('Failed!');
                 }
-                console.log(res.data);
+                if (res.data) {
+                    return res.data.data;
+                }
+            })
+            .then(resData => {
+                if (resData.login) {
+                    const { token, userId, tokenExpiration } = resData.login;
+                    AuthDispatch({ type: 'AUTH_LOG_IN', token, userId, tokenExpiration });
+                }
             })
             .catch(err => {
                 console.log(err);

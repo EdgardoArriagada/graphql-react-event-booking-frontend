@@ -1,12 +1,8 @@
-export type UIActions = UIToggleSideNav | UIDefault;
+import { Dispatch } from 'react';
 
-interface UIToggleSideNav {
-    type: 'UI_TOGGLE_SIDE_NAV';
-}
-
-interface UIDefault {
-    type: null;
-    payload?: null;
+export interface UIStore {
+    UIState: UIState;
+    UIDisptch: Dispatch<UIActions>;
 }
 
 export interface UIState {
@@ -23,3 +19,10 @@ export const UIReducer = (state: UIState, action: UIActions) => {
             return state || initialUIState;
     }
 };
+
+//Actions
+interface UIToggleSideNav {
+    type: 'UI_TOGGLE_SIDE_NAV';
+}
+
+type UIActions = UIToggleSideNav;

@@ -1,16 +1,8 @@
-export type AuthActions = AuthLogIn | AuthLogOut | AuthDefault;
+import { Dispatch } from 'react';
 
-interface AuthLogIn {
-    type: 'AUTH_LOG_IN';
-}
-
-interface AuthLogOut {
-    type: 'AUTH_LOG_OUT';
-}
-
-interface AuthDefault {
-    type: null;
-    payload?: null;
+export interface AuthStore {
+    AuthState: AuthState;
+    AuthDispatch: Dispatch<AuthActions>;
 }
 
 export interface AuthState {
@@ -29,3 +21,14 @@ export const AuthReducer = (state: AuthState, action: AuthActions) => {
             return state || initialAuthState;
     }
 };
+
+// Actions
+interface AuthLogIn {
+    type: 'AUTH_LOG_IN';
+}
+
+interface AuthLogOut {
+    type: 'AUTH_LOG_OUT';
+}
+
+type AuthActions = AuthLogIn | AuthLogOut;

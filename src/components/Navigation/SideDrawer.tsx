@@ -2,13 +2,13 @@ import React from 'react';
 import NavigationItems from './NavigationItems';
 
 import './sideDrawer.scss';
-import { useStateValue } from '../../Store';
+import { useStateValue } from '../../Store/Store';
 
 const SideDrawer = () => {
-    const { state } = useStateValue();
+    const { UIState } = useStateValue();
 
     let sideDrawerClasses = ['side-drawer'];
-    if (state.isSideDrawOpen) {
+    if (UIState.isSideDrawOpen) {
         sideDrawerClasses.push('side-drawer__open');
     }
     return (

@@ -7,13 +7,13 @@ import MainNavigation from './components/Navigation/MainNavigation';
 import './app.scss';
 import SideDrawer from './components/Navigation/SideDrawer';
 import Backdrop from './components/Backdrop/Backdrop';
-import { useStateValue } from './Store';
+import { useStateValue } from './Store/Store';
 
 function App() {
-    const { state } = useStateValue();
+    const { UIState } = useStateValue();
 
     let backdrop;
-    if (state.isSideDrawOpen) {
+    if (UIState.isSideDrawOpen) {
         backdrop = <Backdrop />;
     }
     return (

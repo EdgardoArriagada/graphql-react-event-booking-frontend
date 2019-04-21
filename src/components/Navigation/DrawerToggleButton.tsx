@@ -1,7 +1,7 @@
 import React from 'react';
 
 import './drawerToggleButton.scss';
-import { useStateValue } from '../../Store';
+import { useStateValue } from '../../Store/Store';
 
 const DrawerToggleButton = () => {
     const { dispatch } = useStateValue();

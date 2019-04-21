@@ -1,7 +1,7 @@
 import React from 'react';
 
 import './backdrop.scss';
-import { useStateValue } from '../../Store';
+import { useStateValue } from '../../Store/Store';
 
 const Backdrop = () => {
     const { dispatch } = useStateValue();

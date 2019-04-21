@@ -10,8 +10,8 @@ import Backdrop from './components/Backdrop/Backdrop';
 import { useStateValue } from './Store/Store';
 
 function App() {
-    const { UIState } = useStateValue();
-
+    const { UIState, AuthState } = useStateValue();
+    const { token } = AuthState;
     let backdrop;
     if (UIState.isSideDrawOpen) {
         backdrop = <Backdrop />;
@@ -24,10 +24,12 @@ function App() {
                 {backdrop}
                 <main className="main-content">
                     <Switch>
-                        <Redirect from="/" to="/auth" exact />
-                        <Route path="/auth" component={AuthPage} />
+                        {!token && <Redirect from="/" to="/auth" exact />}
+                        {token && <Redirect from="/" to="/events" exact />}
+                        {token && <Redirect from="/auth" to="/events" exact />}
+                        {!token && <Route path="/auth" component={AuthPage} />}
                         <Route path="/events" component={EventsPage} />
-                        <Route path="/bookings" component={BookingsPage} />
+                        {token && <Route path="/bookings" component={BookingsPage} />}
                     </Switch>
                 </main>
             </BrowserRouter>

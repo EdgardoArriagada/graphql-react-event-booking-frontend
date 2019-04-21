@@ -1,22 +1,17 @@
 import React, { createContext, useContext, useReducer, Dispatch } from 'react';
-import { UIAction, initialUIState, UIReducer, UIState, UIActionTypes } from './Reducers/ui.reducer';
-import { AuthState, initialAuthState, AuthReducer, AuthAction, AuthActionTypes } from './Reducers/auth.reducer';
+import { UIActions, initialUIState, UIReducer, UIState } from './Reducers/ui.reducer';
+import { AuthState, initialAuthState, AuthReducer, AuthActions } from './Reducers/auth.reducer';
 
 const initialState = {
     UIState: { ...initialUIState },
     AuthState: { ...initialAuthState },
 };
 
-type MainActionTypes = UIActionTypes | AuthActionTypes;
+type MainActions = AuthActions | UIActions;
 
-interface MainAction {
-    type: MainActionTypes;
-    payload?: any;
-}
-
-const MainReducer = ({ UIState, AuthState }: MainState, action: MainAction) => ({
-    UIState: UIReducer(UIState, action as UIAction),
-    AuthState: AuthReducer(AuthState, action as AuthAction),
+const MainReducer = ({ UIState, AuthState }: MainState, action: MainActions) => ({
+    UIState: UIReducer(UIState, action as UIActions),
+    AuthState: AuthReducer(AuthState, action as AuthActions),
 });
 
 interface MainState {
@@ -26,7 +21,7 @@ interface MainState {
 
 interface MainStore {
     state: MainState;
-    dispatch: Dispatch<MainAction>;
+    dispatch: Dispatch<MainActions>;
 }
 
 const StateContext = createContext({} as MainStore);

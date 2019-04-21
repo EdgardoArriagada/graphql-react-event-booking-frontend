@@ -1,8 +1,12 @@
-export type UIActionTypes = 'UI_TOGGLE_SIDE_NAV' | null;
+export type UIActions = UIToggleSideNav | UIDefault;
 
-export interface UIAction {
-    type: UIActionTypes;
-    payload?: any;
+interface UIToggleSideNav {
+    type: 'UI_TOGGLE_SIDE_NAV';
+}
+
+interface UIDefault {
+    type: null;
+    payload?: null;
 }
 
 export interface UIState {
@@ -11,7 +15,7 @@ export interface UIState {
 
 export const initialUIState = { isSideDrawOpen: false };
 
-export const UIReducer = (state: UIState, action: UIAction) => {
+export const UIReducer = (state: UIState, action: UIActions) => {
     switch (action.type) {
         case 'UI_TOGGLE_SIDE_NAV':
             return { isSideDrawOpen: !state.isSideDrawOpen };

@@ -6,17 +6,20 @@ export interface AuthStore {
 }
 
 export interface AuthState {
-    isLogIn: boolean;
+    userId: string | null;
+    token: string | null;
+    tokenExpiration: number | null;
 }
 
-export const initialAuthState = { isLogIn: false };
+export const initialAuthState: AuthState = { token: null, userId: null, tokenExpiration: null };
 
-export const AuthReducer = (state: AuthState, action: AuthActions) => {
+export const AuthReducer = (state: AuthState, action: AuthActions): AuthState => {
     switch (action.type) {
         case 'AUTH_LOG_IN':
-            return { isLogIn: true };
+            const { token, userId, tokenExpiration } = action;
+            return { token, userId, tokenExpiration };
         case 'AUTH_LOG_OUT':
-            return { isLogIn: false };
+            return initialAuthState;
         default:
             return state || initialAuthState;
     }
@@ -25,6 +28,9 @@ export const AuthReducer = (state: AuthState, action: AuthActions) => {
 // Actions
 interface AuthLogIn {
     type: 'AUTH_LOG_IN';
+    userId: AuthState['userId'];
+    token: AuthState['token'];
+    tokenExpiration: AuthState['tokenExpiration'];
 }
 
 interface AuthLogOut {

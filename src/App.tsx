@@ -24,12 +24,14 @@ function App() {
                 {backdrop}
                 <main>
                     <Switch>
-                        {!userLoggedIn && <Redirect from="/" to="/auth" exact />}
                         {userLoggedIn && <Redirect from="/" to="/events" exact />}
                         {userLoggedIn && <Redirect from="/auth" to="/events" exact />}
+
                         {!userLoggedIn && <Route path="/auth" component={AuthPage} />}
-                        <Route path="/events" component={EventsPage} />
                         {userLoggedIn && <Route path="/bookings" component={BookingsPage} />}
+                        <Route path="/events" component={EventsPage} />
+
+                        {!userLoggedIn && <Redirect to="/auth" />}
                     </Switch>
                 </main>
             </BrowserRouter>

@@ -10,18 +10,28 @@ import './mainNavigation.scss';
 import { useStateValue } from '../../Store/Store';
 
 const MainNavigation = () => {
-    const { AuthState } = useStateValue();
+    const { AuthState, AuthDispatch } = useStateValue();
     const userLoggedIn = Boolean(AuthState.token);
     const [anchorEl, setAnchorEl] = useState();
     const isMenuOpen = Boolean(anchorEl);
+
     function handleProfileMenuOpen(event: React.MouseEvent<HTMLElement>) {
         setAnchorEl(event.currentTarget);
     }
 
+    function handleLogout() {
+        AuthDispatch({ type: 'AUTH_LOG_OUT' });
+        closeMenu();
+    }
+
+    function closeMenu() {
+        setAnchorEl(null);
+    }
+
     const renderMenu = (
-        <MuMenu anchorEl={anchorEl} open={isMenuOpen} onClose={_ => setAnchorEl(null)}>
+        <MuMenu anchorEl={anchorEl} open={isMenuOpen} onClose={closeMenu}>
             <MuMenuItem onClick={void 0}>Profile</MuMenuItem>
-            <MuMenuItem onClick={void 0}>Logout</MuMenuItem>
+            <MuMenuItem onClick={handleLogout}>Logout</MuMenuItem>
         </MuMenu>
     );
 

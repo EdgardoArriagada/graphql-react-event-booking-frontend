@@ -4,20 +4,7 @@ import './index.scss';
 import App from './App';
 import { StateProvider } from './Store/Store';
 import { MuiThemeProvider, createMuiTheme } from '@material-ui/core';
-
-const theme = createMuiTheme({
-    palette: {
-        primary: {
-            main: '#800080',
-        },
-    },
-});
-
-export const styles = {
-    primaryButton: {
-        margin: '0.25rem 0.1rem',
-    },
-};
+import { theme } from './shared/styles/styles';
 
 ReactDOM.render(
     <MuiThemeProvider theme={theme}>

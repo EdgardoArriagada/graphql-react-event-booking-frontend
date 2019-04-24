@@ -4,7 +4,7 @@ import axios from 'axios';
 
 import './auth.scss';
 import { useStateValue } from '../../Store/Store';
-import { styles } from '../..';
+import { appStyles } from '../../shared/styles/styles';
 
 const AuthPage = () => {
     const { AuthDispatch } = useStateValue();
@@ -77,7 +77,7 @@ const AuthPage = () => {
                 <label htmlFor="password">Password</label>
                 <input type="password" id="password" ref={inputPassword} />
             </div>
-            <Button variant="contained" color="primary" type="submit" style={styles.primaryButton}>
+            <Button variant="contained" color="primary" type="submit" style={appStyles.primaryButton}>
                 {isLoginForm ? 'Login' : 'Signup'}
             </Button>
             <span />
@@ -85,7 +85,7 @@ const AuthPage = () => {
                 variant="contained"
                 color="primary"
                 type="button"
-                style={styles.primaryButton}
+                style={appStyles.primaryButton}
                 onClick={_ => setIsLogInForm(!isLoginForm)}
             >
                 Switch to {isLoginForm ? 'Signup' : 'Login'}

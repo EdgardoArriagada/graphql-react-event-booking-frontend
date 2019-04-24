@@ -1,10 +1,10 @@
 import { createMuiTheme } from '@material-ui/core';
 
-interface AppStyles {
+export interface IStyles {
     [key: string]: React.CSSProperties | undefined;
 }
 
-export const appStyles: AppStyles = {
+export const appStyles: IStyles = {
     primaryButton: {
         margin: '0.25rem 0.1rem',
     },

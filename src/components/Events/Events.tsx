@@ -24,6 +24,9 @@ type PropsWithStyles = Props & WithStyles<'card' | 'button'>;
 
 const EventsPage: React.SFC<PropsWithStyles> = ({ classes }: PropsWithStyles) => {
     const [isModalOpen, setModalOpen] = useState(false);
+    function closeModal() {
+        setModalOpen(false);
+    }
     return (
         <div className="events-page">
             <Card className={classes.card}>
@@ -34,7 +37,7 @@ const EventsPage: React.SFC<PropsWithStyles> = ({ classes }: PropsWithStyles) =>
                 </Button>
             </Card>
             <Modal open={isModalOpen} onClose={_ => setModalOpen(false)}>
-                <CreateEventModalContent />
+                <CreateEventModalContent closeModal={closeModal} />
             </Modal>
         </div>
     );

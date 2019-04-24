@@ -1,19 +1,12 @@
 import React, { useState } from 'react';
 import Button from '@material-ui/core/Button';
 import { Card, Modal, Typography, Theme, withStyles, WithStyles } from '@material-ui/core';
-import { appStyles, IStyles } from '../../shared/styles/styles';
+import { IStyles } from '../../shared/styles/styles';
 
 import './events.scss';
+import CreateEventModalContent from './CreateEventModalContent';
 
 const style = (theme: Theme): IStyles => ({
-    paper: {
-        position: 'absolute',
-        width: theme.spacing.unit * 50,
-        backgroundColor: theme.palette.background.paper,
-        boxShadow: theme.shadows[5],
-        padding: theme.spacing.unit * 4,
-        outline: 'none',
-    },
     card: {
         width: '30rem',
         padding: '1rem',
@@ -27,7 +20,7 @@ const style = (theme: Theme): IStyles => ({
 
 type Props = {};
 
-type PropsWithStyles = Props & WithStyles<'paper' | 'card' | 'button'>;
+type PropsWithStyles = Props & WithStyles<'card' | 'button'>;
 
 const EventsPage: React.SFC<PropsWithStyles> = ({ classes }: PropsWithStyles) => {
     const [isModalOpen, setModalOpen] = useState(false);
@@ -41,9 +34,7 @@ const EventsPage: React.SFC<PropsWithStyles> = ({ classes }: PropsWithStyles) =>
                 </Button>
             </Card>
             <Modal open={isModalOpen} onClose={_ => setModalOpen(false)}>
-                <div className={classes.paper} style={appStyles.modalCentered}>
-                    <Typography>Some Typography</Typography>
-                </div>
+                <CreateEventModalContent />
             </Modal>
         </div>
     );

@@ -8,6 +8,9 @@
     background: rgb(88, 1, 88);
     padding: 0 1.5rem;
     box-shadow: $md-whiteframe-4dp;
+    .account-circle {
+        fill: white;
+    }
 }
 
 .main-navigation__logo {
@@ -62,7 +65,7 @@
         align-items: center;
     }
 
-    .main-navigation__items ul {
+    .main-navigation__items {
         display: flex;
         flex-direction: row;
         align-items: center;
@@ -70,7 +73,7 @@
 }
 
 @media (max-width: 760px) {
-    .main-navigation__items {
+    .main-navigation__links {
         display: none;
     }
 }

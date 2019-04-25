@@ -1,9 +1,10 @@
 import React, { useRef, useState } from 'react';
-import MuButton from '@material-ui/core/Button';
+import Button from '@material-ui/core/Button';
 import axios from 'axios';
 
 import './auth.scss';
 import { useStateValue } from '../../Store/Store';
+import { appStyles } from '../../shared/styles/styles';
 
 const AuthPage = () => {
     const { AuthDispatch } = useStateValue();
@@ -76,15 +77,19 @@ const AuthPage = () => {
                 <label htmlFor="password">Password</label>
                 <input type="password" id="password" ref={inputPassword} />
             </div>
-            <div className="form-actions">
-                <MuButton variant="contained" color="primary" type="submit">
-                    {isLoginForm ? 'Login' : 'Signup'}
-                </MuButton>
-                <span />
-                <MuButton variant="contained" color="primary" type="button" onClick={_ => setIsLogInForm(!isLoginForm)}>
-                    Switch to {isLoginForm ? 'Signup' : 'Login'}
-                </MuButton>
-            </div>
+            <Button variant="contained" color="primary" type="submit" style={appStyles.primaryButton}>
+                {isLoginForm ? 'Login' : 'Signup'}
+            </Button>
+            <span />
+            <Button
+                variant="contained"
+                color="primary"
+                type="button"
+                style={appStyles.primaryButton}
+                onClick={_ => setIsLogInForm(!isLoginForm)}
+            >
+                Switch to {isLoginForm ? 'Signup' : 'Login'}
+            </Button>
         </form>
     );
 };

@@ -11,7 +11,7 @@ import { useStateValue } from './Store/Store';
 
 function App() {
     const { UIState, AuthState } = useStateValue();
-    const { token } = AuthState;
+    const userLoggedIn = Boolean(AuthState.token);
     let backdrop;
     if (UIState.isSideDrawOpen) {
         backdrop = <Backdrop />;
@@ -22,14 +22,16 @@ function App() {
                 <MainNavigation />
                 <SideDrawer />
                 {backdrop}
-                <main className="main-content">
+                <main>
                     <Switch>
-                        {!token && <Redirect from="/" to="/auth" exact />}
-                        {token && <Redirect from="/" to="/events" exact />}
-                        {token && <Redirect from="/auth" to="/events" exact />}
-                        {!token && <Route path="/auth" component={AuthPage} />}
+                        {userLoggedIn && <Redirect from="/" to="/events" exact />}
+                        {userLoggedIn && <Redirect from="/auth" to="/events" exact />}
+
+                        {!userLoggedIn && <Route path="/auth" component={AuthPage} />}
+                        {userLoggedIn && <Route path="/bookings" component={BookingsPage} />}
                         <Route path="/events" component={EventsPage} />
-                        {token && <Route path="/bookings" component={BookingsPage} />}
+
+                        {!userLoggedIn && <Redirect to="/auth" />}
                     </Switch>
                 </main>
             </BrowserRouter>

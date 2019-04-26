@@ -23,7 +23,7 @@ type Props = {};
 type PropsWithStyles = Props & WithStyles<'card' | 'button'>;
 
 const EventsPage: React.SFC<PropsWithStyles> = ({ classes }: PropsWithStyles) => {
-    const [isModalOpen, setModalOpen] = useState(false);
+    const [isModalOpen, setModalOpen] = useState(true);
     function closeModal() {
         setModalOpen(false);
     }

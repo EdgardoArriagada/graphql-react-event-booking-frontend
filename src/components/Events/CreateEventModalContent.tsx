@@ -5,6 +5,9 @@ import AppModalContent from '../sharedComponents/AppModalContent';
 import { Alarm } from '@material-ui/icons';
 import { MuiPickersUtilsProvider, InlineDatePicker, InlineTimePicker } from 'material-ui-pickers';
 import MomentUtils from '@date-io/moment';
+import classNames from 'classnames';
+
+import './createEventModalContent.scss';
 
 const style = (theme: Theme): IStyles => ({
     header: {
@@ -14,9 +17,6 @@ const style = (theme: Theme): IStyles => ({
     },
     content: {
         margin: '1.5rem',
-    },
-    contentItem: {
-        margin: '1em 0',
     },
     actions: {
         padding: '.5rem',
@@ -40,17 +40,16 @@ const CreateEventModalContent: React.SFC<PropsWithStyles> = ({ classes, ...props
                     Create Event
                 </Typography>
 
-                <form className={classes.content}>
-                    <FormGroup className={classes.contentItem}>
+                <form className={classNames(classes.content, 'create-event-modal-content__form')}>
+                    <FormGroup className="create-event-modal-content__title">
                         <TextField id="title" variant="outlined" label="Title" onChange={void 0} />
                     </FormGroup>
-                    <FormGroup className={classes.contentItem}>
+
+                    <FormGroup className="create-event-modal-content__description">
                         <TextField id="description" variant="outlined" label="description" onChange={void 0} />
                     </FormGroup>
-                    <FormGroup className={classes.contentItem}>
-                        <TextField id="price" variant="outlined" label="price" onChange={void 0} />
-                    </FormGroup>
-                    <FormGroup className={classes.contentItem}>
+
+                    <FormGroup className="create-event-modal-content__date">
                         <MuiPickersUtilsProvider utils={MomentUtils}>
                             <InlineDatePicker
                                 keyboard
@@ -64,7 +63,8 @@ const CreateEventModalContent: React.SFC<PropsWithStyles> = ({ classes, ...props
                             />
                         </MuiPickersUtilsProvider>
                     </FormGroup>
-                    <FormGroup className={classes.contentItem}>
+
+                    <FormGroup className="create-event-modal-content__time">
                         <MuiPickersUtilsProvider utils={MomentUtils}>
                             <InlineTimePicker
                                 keyboard
@@ -76,6 +76,10 @@ const CreateEventModalContent: React.SFC<PropsWithStyles> = ({ classes, ...props
                                 mask={[/\d/, /\d/, ':', /\d/, /\d/, ' ', /a|p/i, 'M']}
                             />
                         </MuiPickersUtilsProvider>
+                    </FormGroup>
+
+                    <FormGroup className="create-event-modal-content__price">
+                        <TextField id="price" variant="outlined" label="price" onChange={void 0} />
                     </FormGroup>
                 </form>
 

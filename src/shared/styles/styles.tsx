@@ -1,7 +1,7 @@
 import { createMuiTheme } from '@material-ui/core';
 
 export interface IStyles {
-    [key: string]: React.CSSProperties | undefined;
+    [key: string]: React.CSSProperties;
 }
 
 export const appStyles: IStyles = {

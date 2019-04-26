@@ -6,6 +6,7 @@ const style = (theme: Theme): IStyles => ({
     paper: {
         position: 'absolute',
         width: theme.spacing.unit * 50,
+        maxWidth: '80%',
         backgroundColor: theme.palette.background.paper,
         boxShadow: theme.shadows[5],
         outline: 'none',

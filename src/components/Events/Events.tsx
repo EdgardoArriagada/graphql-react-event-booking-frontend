@@ -5,6 +5,7 @@ import { IStyles } from '../../shared/styles/styles';
 
 import './events.scss';
 import CreateEventModalContent from './CreateEventModalContent';
+import { useStateValue } from '../../Store/Store';
 
 const style = (theme: Theme): IStyles => ({
     card: {
@@ -23,22 +24,28 @@ type Props = {};
 type PropsWithStyles = Props & WithStyles<'card' | 'button'>;
 
 const EventsPage: React.SFC<PropsWithStyles> = ({ classes }: PropsWithStyles) => {
+    const { AuthState } = useStateValue();
+    const userLoggedIn = Boolean(AuthState.token);
     const [isModalOpen, setModalOpen] = useState(false);
     function closeModal() {
         setModalOpen(false);
     }
     return (
         <div className="events-page">
-            <Card className={classes.card}>
-                <Typography>Share your own Event!</Typography>
+            {userLoggedIn && (
+                <div className="events-page_create-event">
+                    <Card className={classes.card}>
+                        <Typography>Share your own Event!</Typography>
 
-                <Button variant="contained" color="primary" type="button" onClick={_ => setModalOpen(true)}>
-                    Create Event
-                </Button>
-            </Card>
-            <Modal open={isModalOpen} onClose={_ => setModalOpen(false)}>
-                <CreateEventModalContent closeModal={closeModal} />
-            </Modal>
+                        <Button variant="contained" color="primary" type="button" onClick={_ => setModalOpen(true)}>
+                            Create Event
+                        </Button>
+                    </Card>
+                    <Modal open={isModalOpen} onClose={_ => setModalOpen(false)}>
+                        <CreateEventModalContent closeModal={closeModal} />
+                    </Modal>
+                </div>
+            )}
         </div>
     );
 };

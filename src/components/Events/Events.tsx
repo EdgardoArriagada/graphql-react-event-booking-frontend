@@ -1,46 +1,19 @@
 import React, { useState, useEffect } from 'react';
 import Button from '@material-ui/core/Button';
-import {
-    Card,
-    Modal,
-    Typography,
-    Theme,
-    withStyles,
-    WithStyles,
-    Divider,
-    CardContent,
-    CardHeader,
-} from '@material-ui/core';
-import { IStyles } from '../../shared/styles/styles';
+import { Card, Modal, Typography, Theme, withStyles, WithStyles, CardContent, CardHeader } from '@material-ui/core';
+import { IStyles, appClasses } from '../../shared/styles/styles';
 
 import './events.scss';
 import CreateEventModalContent from './CreateEventModalContent';
 import { useStateValue } from '../../Store/Store';
 import Axios from 'axios';
+import EventList from './EventsList/EventList';
 
 const style = (theme: Theme): IStyles => ({
-    card: {
-        width: '30rem',
-        margin: '0.5rem auto',
-        maxWidth: '80%',
-        display: 'flex',
-        flexDirection: 'column',
-        alignItems: 'center',
-    },
-    list: {
-        listStyle: 'none',
-    },
-    listItem: {
-        width: '100%',
-        display: 'flex',
-        flexDirection: 'column',
-        alignContent: 'flex-start',
-    },
+    card: { ...appClasses.card },
 });
 
-type Props = {};
-
-type PropsWithStyles = Props & WithStyles<'card' | 'list' | 'listItem'>;
+type PropsWithStyles = Props & WithStyles<'list' | 'card'>;
 
 const EventsPage: React.SFC<PropsWithStyles> = ({ classes }: PropsWithStyles) => {
     const [fetchedEvents, setFetchedEvents] = useState([]);
@@ -97,20 +70,6 @@ const EventsPage: React.SFC<PropsWithStyles> = ({ classes }: PropsWithStyles) =>
         setModalOpen(false);
     }
 
-    const eventList = fetchedEvents.map((event: any) => (
-        <Card className={classes.card} key={event._id}>
-            <CardContent className={classes.listItem}>
-                <CardHeader title={event.title} />
-                <CardContent>
-                    <Typography variant="subtitle1" gutterBottom>
-                        {event.description}
-                    </Typography>
-                    <Typography>{event.price} USD </Typography>
-                </CardContent>
-            </CardContent>
-        </Card>
-    ));
-
     return (
         <div className="events-page">
             {userLoggedIn && (
@@ -127,9 +86,11 @@ const EventsPage: React.SFC<PropsWithStyles> = ({ classes }: PropsWithStyles) =>
                     </Modal>
                 </React.Fragment>
             )}
-            <section className={classes.list}>{eventList}</section>
+            <EventList events={fetchedEvents} />
         </div>
     );
 };
+
+type Props = {};
 
 export default withStyles(style as any)(EventsPage);

@@ -1,6 +1,6 @@
 import React, { useRef, useState } from 'react';
 import { Theme, withStyles, WithStyles, Typography, Divider, Button, FormGroup, TextField } from '@material-ui/core';
-import { IStyles, appStyles } from '../../shared/styles/styles';
+import { IStyles, appClasses } from '../../shared/styles/styles';
 import AppModalContent from '../sharedComponents/AppModalContent';
 import { Alarm } from '@material-ui/icons';
 import { MuiPickersUtilsProvider, InlineDatePicker, InlineTimePicker } from 'material-ui-pickers';
@@ -166,11 +166,11 @@ const CreateEventModalContent: React.SFC<PropsWithStyles> = ({ classes, ...props
                             variant="text"
                             color="primary"
                             onClick={props.closeModal}
-                            style={appStyles.primaryButton}
+                            style={appClasses.primaryButton}
                         >
                             Cancel
                         </Button>
-                        <Button variant="contained" color="primary" type="submit" style={appStyles.primaryButton}>
+                        <Button variant="contained" color="primary" type="submit" style={appClasses.primaryButton}>
                             Create
                         </Button>
                     </div>

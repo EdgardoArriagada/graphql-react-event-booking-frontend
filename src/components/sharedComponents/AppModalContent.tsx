@@ -1,6 +1,6 @@
 import React from 'react';
 import { Theme, withStyles, WithStyles } from '@material-ui/core';
-import { appStyles, IStyles } from '../../shared/styles/styles';
+import { appClasses, IStyles } from '../../shared/styles/styles';
 
 const style = (theme: Theme): IStyles => ({
     paper: {
@@ -21,7 +21,7 @@ type PropsWithStyles = Props & WithStyles<'paper'>;
 
 const AppModalContent: React.SFC<PropsWithStyles> = ({ classes, ...props }: PropsWithStyles) => {
     return (
-        <div className={classes.paper} style={appStyles.modalCentered}>
+        <div className={classes.paper} style={appClasses.modalCentered}>
             {props.children}
         </div>
     );

@@ -71,10 +71,6 @@ const CreateEventModalContent: React.SFC<PropsWithStyles> = ({ classes, ...props
                     description
                     date
                     price
-                    creator{
-                        _id
-                        email
-                    }
                 }
             }`,
         };

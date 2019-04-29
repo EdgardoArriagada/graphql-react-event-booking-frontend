@@ -16,7 +16,7 @@ const style = (theme: Theme): IStyles => ({
 type PropsWithStyles = Props & WithStyles<'list' | 'card'>;
 
 const EventsPage: React.SFC<PropsWithStyles> = ({ classes }: PropsWithStyles) => {
-    const [fetchedEvents, setFetchedEvents] = useState([]);
+    const { EventsDispatch } = useStateValue();
     function fetchEvents() {
         const requestBody = {
             query: `query {
@@ -33,7 +33,7 @@ const EventsPage: React.SFC<PropsWithStyles> = ({ classes }: PropsWithStyles) =>
                 }
             }`,
         };
-
+        EventsDispatch({ type: 'FETCH_EVENTS_PENDING' });
         Axios({
             url: 'http://localhost:3000/graphql',
             method: 'POST',
@@ -52,9 +52,10 @@ const EventsPage: React.SFC<PropsWithStyles> = ({ classes }: PropsWithStyles) =>
             })
             .then(resData => {
                 console.log(resData);
-                setFetchedEvents(resData.events);
+                EventsDispatch({ type: 'FETCH_EVENTS_FULFILLED', events: resData.events });
             })
             .catch(err => {
+                EventsDispatch({ type: 'FETCH_EVENTS_REJECTED' });
                 console.log(err);
             });
     }
@@ -86,7 +87,7 @@ const EventsPage: React.SFC<PropsWithStyles> = ({ classes }: PropsWithStyles) =>
                     </Modal>
                 </React.Fragment>
             )}
-            <EventList events={fetchedEvents} />
+            <EventList />
         </div>
     );
 };

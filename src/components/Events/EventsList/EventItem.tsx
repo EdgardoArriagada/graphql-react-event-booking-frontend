@@ -14,6 +14,7 @@ import {
 import { IStyles, appClasses } from '../../../shared/styles/styles';
 import { Create } from '@material-ui/icons';
 import classNames from 'classnames';
+import { useStateValue } from '../../../Store/Store';
 
 const style = (theme: Theme): IStyles => ({
     card: { ...appClasses.card },
@@ -49,16 +50,20 @@ type PropsWithStyles = Props &
     WithStyles<'card' | 'cardContent' | 'cardHeader' | 'cardContentItem' | 'cardDescription' | 'cardActions'>;
 
 const EventItem: React.SFC<PropsWithStyles> = ({ classes, ...props }: PropsWithStyles) => {
+    const { AuthState } = useStateValue();
     const { event } = props;
+    const isThisUser = AuthState.userId === event.creator._id;
     return (
         <Card className={classes.card} key={event._id}>
             <CardHeader
                 className={classes.cardHeader}
                 title={event.title}
                 action={
-                    <IconButton aria-label="Edit">
-                        <Create fontSize="small" />
-                    </IconButton>
+                    isThisUser && (
+                        <IconButton aria-label="Edit">
+                            <Create fontSize="small" />
+                        </IconButton>
+                    )
                 }
             />
             <CardContent className={classes.cardContent}>
@@ -68,15 +73,19 @@ const EventItem: React.SFC<PropsWithStyles> = ({ classes, ...props }: PropsWithS
                     </Typography>
                     <Typography variant="h6">{event.price} USD </Typography>
                 </span>
-                <span className={classes.cardContentItem}>
-                    <Typography variant="caption">You are the owner of this event</Typography>
-                </span>
+                {isThisUser && (
+                    <span className={classes.cardContentItem}>
+                        <Typography variant="caption">You are the owner of this event</Typography>
+                    </span>
+                )}
             </CardContent>
             <CardActions className={classes.cardActions}>
                 <Button variant="text">Details</Button>
-                <Button variant="text" color="primary">
-                    Book this
-                </Button>
+                {!isThisUser && (
+                    <Button variant="text" color="primary">
+                        Book this
+                    </Button>
+                )}
             </CardActions>
         </Card>
     );

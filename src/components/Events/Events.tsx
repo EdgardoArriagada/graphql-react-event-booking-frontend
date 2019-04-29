@@ -123,7 +123,7 @@ const EventsPage: React.SFC<PropsWithStyles> = ({ classes }: PropsWithStyles) =>
                         </Button>
                     </Card>
                     <Modal open={isModalOpen} onClose={_ => setModalOpen(false)}>
-                        <CreateEventModalContent closeModal={closeModal} />
+                        <CreateEventModalContent closeModal={closeModal} fetchEvents={fetchEvents} />
                     </Modal>
                 </React.Fragment>
             )}

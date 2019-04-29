@@ -26,6 +26,7 @@ const style = (theme: Theme): IStyles => ({
 
 type Props = {
     closeModal: any;
+    fetchEvents: any;
 };
 
 type PropsWithStyles = Props & WithStyles<'header' | 'content' | 'actions'>;
@@ -97,6 +98,8 @@ const CreateEventModalContent: React.SFC<PropsWithStyles> = ({ classes, ...props
             })
             .then(resData => {
                 console.log(resData);
+                props.fetchEvents();
+                props.closeModal();
             })
             .catch(err => {
                 console.log(err);

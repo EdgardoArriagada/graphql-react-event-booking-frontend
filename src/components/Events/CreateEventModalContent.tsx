@@ -54,7 +54,7 @@ const CreateEventModalContent: React.SFC<PropsWithStyles> = ({ classes, ...props
         event.preventDefault();
         const title = inputTitle.current.value.trim();
         const description = inputDescription.current.value.trim();
-        const price = parseFloat(inputPrice.current.value.trim());
+        const price = inputPrice.current.value.trim();
         const date = constructModifiedDate(selectedDayOfTeYear, selectedTime);
 
         if (!title || !description || !price || !date) {
@@ -63,7 +63,8 @@ const CreateEventModalContent: React.SFC<PropsWithStyles> = ({ classes, ...props
 
         const requestBody = {
             query: `mutation {
-                createEvent(eventInput: {title: "${title}", description: "${description}", price: ${price}, date: "${date}"}) {
+                createEvent(eventInput: {title: "${title}", description: "${description}",
+                price: ${parseFloat(price)}, date: "${date}"}) {
                     _id
                     title
                     description

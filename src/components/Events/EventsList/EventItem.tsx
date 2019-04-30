@@ -71,6 +71,9 @@ const EventItem: React.SFC<PropsWithStyles> = ({ classes, ...props }: PropsWithS
                     <Typography variant="body1" gutterBottom>
                         {event.description}
                     </Typography>
+                    <Typography variant="caption" gutterBottom>
+                        {new Date(event.date).toLocaleString()}
+                    </Typography>
                     <Typography variant="h6">{event.price} USD </Typography>
                 </span>
                 {isThisUser && (

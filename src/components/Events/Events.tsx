@@ -1,6 +1,16 @@
 import React, { useState, useEffect } from 'react';
 import Button from '@material-ui/core/Button';
-import { Card, Modal, Typography, Theme, withStyles, WithStyles, CardContent, CardHeader } from '@material-ui/core';
+import {
+    Card,
+    Modal,
+    Typography,
+    Theme,
+    withStyles,
+    WithStyles,
+    CardContent,
+    CardHeader,
+    LinearProgress,
+} from '@material-ui/core';
 import { IStyles, appClasses } from '../../shared/styles/styles';
 
 import './events.scss';
@@ -17,7 +27,10 @@ type PropsWithStyles = Props & WithStyles<'list' | 'card'>;
 
 const EventsPage: React.SFC<PropsWithStyles> = ({ classes }: PropsWithStyles) => {
     const { EventsDispatch } = useStateValue();
+    // useState(1) is because 0 doesn't render the component
+    const [progress, setProgress] = useState(1);
     function fetchEvents() {
+        setProgress(60);
         const requestBody = {
             query: `query {
                 events {
@@ -44,7 +57,7 @@ const EventsPage: React.SFC<PropsWithStyles> = ({ classes }: PropsWithStyles) =>
         })
             .then(res => {
                 if (res.status !== 200 && res.status !== 201) {
-                    throw new Error('Failed!');
+                    EventsDispatch({ type: 'FETCH_EVENTS_REJECTED' });
                 }
                 if (res.data) {
                     return res.data.data;
@@ -53,10 +66,16 @@ const EventsPage: React.SFC<PropsWithStyles> = ({ classes }: PropsWithStyles) =>
             .then(resData => {
                 console.log(resData);
                 EventsDispatch({ type: 'FETCH_EVENTS_FULFILLED', events: resData.events });
+                setProgress(100);
             })
             .catch(err => {
                 EventsDispatch({ type: 'FETCH_EVENTS_REJECTED' });
                 console.log(err);
+            })
+            .finally(() => {
+                setTimeout(() => {
+                    setProgress(0);
+                }, 300);
             });
     }
 
@@ -73,6 +92,7 @@ const EventsPage: React.SFC<PropsWithStyles> = ({ classes }: PropsWithStyles) =>
 
     return (
         <div className="events-page">
+            {Boolean(progress) && <LinearProgress variant="determinate" value={progress} />}
             {userLoggedIn && (
                 <React.Fragment>
                     <Card className={classes.card}>

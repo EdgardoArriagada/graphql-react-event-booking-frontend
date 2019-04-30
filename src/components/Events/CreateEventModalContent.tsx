@@ -1,6 +1,6 @@
 import React, { useRef, useState } from 'react';
 import { Theme, withStyles, WithStyles, Typography, Divider, Button, FormGroup, TextField } from '@material-ui/core';
-import { IStyles, appStyles } from '../../shared/styles/styles';
+import { IStyles, appClasses } from '../../shared/styles/styles';
 import AppModalContent from '../sharedComponents/AppModalContent';
 import { Alarm } from '@material-ui/icons';
 import { MuiPickersUtilsProvider, InlineDatePicker, InlineTimePicker } from 'material-ui-pickers';
@@ -26,6 +26,7 @@ const style = (theme: Theme): IStyles => ({
 
 type Props = {
     closeModal: any;
+    fetchEvents: any;
 };
 
 type PropsWithStyles = Props & WithStyles<'header' | 'content' | 'actions'>;
@@ -54,7 +55,7 @@ const CreateEventModalContent: React.SFC<PropsWithStyles> = ({ classes, ...props
         event.preventDefault();
         const title = inputTitle.current.value.trim();
         const description = inputDescription.current.value.trim();
-        const price = parseFloat(inputPrice.current.value.trim());
+        const price = inputPrice.current.value.trim();
         const date = constructModifiedDate(selectedDayOfTeYear, selectedTime);
 
         if (!title || !description || !price || !date) {
@@ -63,16 +64,13 @@ const CreateEventModalContent: React.SFC<PropsWithStyles> = ({ classes, ...props
 
         const requestBody = {
             query: `mutation {
-                createEvent(eventInput: {title: "${title}", description: "${description}", price: ${price}, date: "${date}"}) {
+                createEvent(eventInput: {title: "${title}", description: "${description}",
+                price: ${parseFloat(price)}, date: "${date}"}) {
                     _id
                     title
                     description
                     date
                     price
-                    creator{
-                        _id
-                        email
-                    }
                 }
             }`,
         };
@@ -96,6 +94,8 @@ const CreateEventModalContent: React.SFC<PropsWithStyles> = ({ classes, ...props
             })
             .then(resData => {
                 console.log(resData);
+                props.fetchEvents();
+                props.closeModal();
             })
             .catch(err => {
                 console.log(err);
@@ -162,11 +162,11 @@ const CreateEventModalContent: React.SFC<PropsWithStyles> = ({ classes, ...props
                             variant="text"
                             color="primary"
                             onClick={props.closeModal}
-                            style={appStyles.primaryButton}
+                            style={appClasses.primaryButton}
                         >
                             Cancel
                         </Button>
-                        <Button variant="contained" color="primary" type="submit" style={appStyles.primaryButton}>
+                        <Button variant="contained" color="primary" type="submit" style={appClasses.primaryButton}>
                             Create
                         </Button>
                     </div>

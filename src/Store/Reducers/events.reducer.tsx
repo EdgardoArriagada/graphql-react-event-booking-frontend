@@ -1,4 +1,5 @@
 import { Dispatch } from 'react';
+import { Status } from './utils/types';
 
 export interface EventsStore {
     EventsState: EventsState;
@@ -15,7 +16,7 @@ export interface Event {
 }
 
 export interface EventsState {
-    status: 'PENDING' | 'FULFILLED' | 'REJECTED' | 'PRISTINE';
+    status: Status;
     events: Array<Event>;
 }
 

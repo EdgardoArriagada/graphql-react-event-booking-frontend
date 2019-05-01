@@ -1,36 +1,30 @@
 import React, { useState, useEffect } from 'react';
 import Button from '@material-ui/core/Button';
-import {
-    Card,
-    Modal,
-    Typography,
-    Theme,
-    withStyles,
-    WithStyles,
-    CardContent,
-    CardHeader,
-    LinearProgress,
-} from '@material-ui/core';
-import { IStyles, appClasses } from '../../shared/styles/styles';
+import { Card, Modal, Typography, Theme, withStyles, WithStyles, LinearProgress } from '@material-ui/core';
+import { appClasses } from '../../shared/styles/styles';
 
-import './events.scss';
+import '../../index.scss';
 import CreateEventModalContent from './CreateEventModalContent';
 import { useStateValue } from '../../Store/Store';
 import Axios from 'axios';
-import EventList from './EventsList/EventList';
+import EventsList from './EventsList/EventsList';
+import { IStyles } from '../../shared/models/styles.model';
 
 const style = (theme: Theme): IStyles => ({
     card: { ...appClasses.card },
 });
 
-type PropsWithStyles = Props & WithStyles<'list' | 'card'>;
+type PropsWithStyles = Props & WithStyles<'card'>;
 
 const EventsPage: React.SFC<PropsWithStyles> = ({ classes }: PropsWithStyles) => {
+    let _isActive: boolean = true;
     const { EventsDispatch } = useStateValue();
     // useState(1) is because 0 doesn't render the component
     const [progress, setProgress] = useState(1);
     function fetchEvents() {
-        setProgress(60);
+        if (_isActive) {
+            setProgress(10);
+        }
         const requestBody = {
             query: `query {
                 events {
@@ -46,7 +40,9 @@ const EventsPage: React.SFC<PropsWithStyles> = ({ classes }: PropsWithStyles) =>
                 }
             }`,
         };
+
         EventsDispatch({ type: 'FETCH_EVENTS_PENDING' });
+
         Axios({
             url: 'http://localhost:3000/graphql',
             method: 'POST',
@@ -64,23 +60,28 @@ const EventsPage: React.SFC<PropsWithStyles> = ({ classes }: PropsWithStyles) =>
                 }
             })
             .then(resData => {
-                console.log(resData);
                 EventsDispatch({ type: 'FETCH_EVENTS_FULFILLED', events: resData.events });
-                setProgress(100);
+                if (_isActive) {
+                    setProgress(100);
+                }
             })
             .catch(err => {
                 EventsDispatch({ type: 'FETCH_EVENTS_REJECTED' });
-                console.log(err);
             })
             .finally(() => {
                 setTimeout(() => {
-                    setProgress(0);
+                    if (_isActive) {
+                        setProgress(0);
+                    }
                 }, 300);
             });
     }
 
     useEffect(() => {
         fetchEvents();
+        return () => {
+            _isActive = false;
+        };
     }, []);
 
     const { AuthState } = useStateValue();
@@ -91,7 +92,7 @@ const EventsPage: React.SFC<PropsWithStyles> = ({ classes }: PropsWithStyles) =>
     }
 
     return (
-        <div className="events-page">
+        <div className="events-page app-centered-page">
             {Boolean(progress) && <LinearProgress variant="determinate" value={progress} />}
             {userLoggedIn && (
                 <React.Fragment>
@@ -107,7 +108,7 @@ const EventsPage: React.SFC<PropsWithStyles> = ({ classes }: PropsWithStyles) =>
                     </Modal>
                 </React.Fragment>
             )}
-            <EventList />
+            <EventsList />
         </div>
     );
 };

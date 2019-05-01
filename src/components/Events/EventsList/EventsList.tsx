@@ -1,8 +1,8 @@
 import React from 'react';
 import EventItem from './EventItem';
 import { withStyles, WithStyles, Theme } from '@material-ui/core';
-import { IStyles } from '../../../shared/styles/styles';
 import { useStateValue } from '../../../Store/Store';
+import { IStyles } from '../../../shared/models/styles.model';
 
 const style = (theme: Theme): IStyles => ({
     list: {
@@ -12,13 +12,13 @@ const style = (theme: Theme): IStyles => ({
 
 type PropsWithStyles = Props & WithStyles<'list'>;
 
-const EventList: React.SFC<PropsWithStyles> = ({ classes }: PropsWithStyles) => {
+const EventsList: React.SFC<PropsWithStyles> = ({ classes }: PropsWithStyles) => {
     const { EventsState } = useStateValue();
-    const eventList = EventsState.events.map((event: any) => <EventItem event={event} />);
+    const EventsList = EventsState.events.map((event: any) => <EventItem event={event} key={event._id} />);
 
-    return <section className={classes.list}>{eventList}</section>;
+    return <section className={classes.list}>{EventsList}</section>;
 };
 
 type Props = {};
 
-export default withStyles(style as any)(EventList);
+export default withStyles(style as any)(EventsList);

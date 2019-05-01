@@ -15,8 +15,8 @@ import { appClasses } from '../../../shared/styles/styles';
 import { Create } from '@material-ui/icons';
 import classNames from 'classnames';
 import { useStateValue } from '../../../Store/Store';
-import Axios from 'axios';
 import { IStyles } from '../../../shared/models/styles.model';
+import { IBooking } from '../../../shared/models/booking.model';
 
 const style = (theme: Theme): IStyles => ({
     card: { ...appClasses.card },
@@ -51,61 +51,20 @@ const style = (theme: Theme): IStyles => ({
 type PropsWithStyles = Props &
     WithStyles<'card' | 'cardContent' | 'cardHeader' | 'cardContentItem' | 'cardDescription' | 'cardActions'>;
 
-const EventItem: React.SFC<PropsWithStyles> = ({ classes, ...props }: PropsWithStyles) => {
-    function bookEventHandler() {
-        if (!userLoggedIn) {
-            alert('you should log in to book an event');
-            return;
-        }
-        const requestBody = {
-            query: `mutation {
-                bookEvent(eventId: "${event._id}") {
-                  _id
-                  createdAt
-                  updatedAt
-                }
-              }`,
-        };
-
-        Axios({
-            url: 'http://localhost:3000/graphql',
-            method: 'POST',
-            data: requestBody,
-            headers: {
-                'Content-Type': 'application/json',
-                Authorization: 'Bearer ' + AuthState.token,
-            },
-        })
-            .then(res => {
-                if (res.status !== 200 && res.status !== 201) {
-                    throw new Error('Failed!');
-                }
-                if (res.data) {
-                    return res.data.data;
-                }
-            })
-            .then(resData => {
-                console.log(resData);
-            })
-            .catch(err => {
-                console.log(err);
-            });
-    }
+const BookingItem: React.SFC<PropsWithStyles> = ({ classes, ...props }: PropsWithStyles) => {
     const { AuthState } = useStateValue();
-    const { event } = props;
-    const userLoggedIn = Boolean(AuthState.token);
-    const isThisUser = AuthState.userId === event.creator._id;
+    const { booking } = props;
+    const { event } = booking;
+    const isThisUser = AuthState.userId === booking.event.creator._id;
     return (
         <Card className={classes.card}>
             <CardHeader
                 className={classes.cardHeader}
                 title={event.title}
                 action={
-                    isThisUser && (
-                        <IconButton aria-label="Edit">
-                            <Create fontSize="small" />
-                        </IconButton>
-                    )
+                    <IconButton aria-label="Edit">
+                        <Create fontSize="small" />
+                    </IconButton>
                 }
             />
             <CardContent className={classes.cardContent}>
@@ -126,19 +85,14 @@ const EventItem: React.SFC<PropsWithStyles> = ({ classes, ...props }: PropsWithS
             </CardContent>
             <CardActions className={classes.cardActions}>
                 <Button variant="text">Details</Button>
-                {!isThisUser && (
-                    <Button variant="text" color="primary" onClick={bookEventHandler}>
-                        Book this
-                    </Button>
-                )}
             </CardActions>
         </Card>
     );
 };
 
 type Props = {
-    event: any;
+    booking: IBooking;
     classes: any;
 };
 
-export default withStyles(style as any)(EventItem);
+export default withStyles(style as any)(BookingItem);

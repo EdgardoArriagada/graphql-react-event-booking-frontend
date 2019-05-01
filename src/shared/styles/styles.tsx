@@ -1,9 +1,5 @@
 import { createMuiTheme } from '@material-ui/core';
 
-export interface IStyles {
-    [key: string]: React.CSSProperties;
-}
-
 interface AppClasses {
     primaryButton: React.CSSProperties;
     modalCentered: React.CSSProperties;
@@ -34,5 +30,8 @@ export const theme = createMuiTheme({
         primary: {
             main: '#800080',
         },
+    },
+    typography: {
+        useNextVariants: true,
     },
 });

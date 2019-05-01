@@ -1,23 +1,14 @@
 import React, { useState, useEffect } from 'react';
 import Button from '@material-ui/core/Button';
-import {
-    Card,
-    Modal,
-    Typography,
-    Theme,
-    withStyles,
-    WithStyles,
-    CardContent,
-    CardHeader,
-    LinearProgress,
-} from '@material-ui/core';
-import { IStyles, appClasses } from '../../shared/styles/styles';
+import { Card, Modal, Typography, Theme, withStyles, WithStyles, LinearProgress } from '@material-ui/core';
+import { appClasses } from '../../shared/styles/styles';
 
-import './events.scss';
+import '../../index.scss';
 import CreateEventModalContent from './CreateEventModalContent';
 import { useStateValue } from '../../Store/Store';
 import Axios from 'axios';
-import EventList from './EventsList/EventList';
+import EventsList from './EventsList/EventsList';
+import { IStyles } from '../../shared/models/styles.model';
 
 const style = (theme: Theme): IStyles => ({
     card: { ...appClasses.card },
@@ -30,7 +21,7 @@ const EventsPage: React.SFC<PropsWithStyles> = ({ classes }: PropsWithStyles) =>
     // useState(1) is because 0 doesn't render the component
     const [progress, setProgress] = useState(1);
     function fetchEvents() {
-        setProgress(60);
+        setProgress(10);
         const requestBody = {
             query: `query {
                 events {
@@ -107,7 +98,7 @@ const EventsPage: React.SFC<PropsWithStyles> = ({ classes }: PropsWithStyles) =>
                     </Modal>
                 </React.Fragment>
             )}
-            <EventList />
+            <EventsList />
         </div>
     );
 };

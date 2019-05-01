@@ -11,10 +11,12 @@ import {
     CardActions,
     Button,
 } from '@material-ui/core';
-import { IStyles, appClasses } from '../../../shared/styles/styles';
+import { appClasses } from '../../../shared/styles/styles';
 import { Create } from '@material-ui/icons';
 import classNames from 'classnames';
 import { useStateValue } from '../../../Store/Store';
+import Axios from 'axios';
+import { IStyles } from '../../../shared/models/styles.model';
 
 const style = (theme: Theme): IStyles => ({
     card: { ...appClasses.card },

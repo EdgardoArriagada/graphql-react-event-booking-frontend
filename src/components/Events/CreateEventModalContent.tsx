@@ -1,6 +1,6 @@
 import React, { useRef, useState } from 'react';
 import { Theme, withStyles, WithStyles, Typography, Divider, Button, FormGroup, TextField } from '@material-ui/core';
-import { IStyles, appClasses } from '../../shared/styles/styles';
+import { appClasses } from '../../shared/styles/styles';
 import AppModalContent from '../sharedComponents/AppModalContent';
 import { Alarm } from '@material-ui/icons';
 import { MuiPickersUtilsProvider, InlineDatePicker, InlineTimePicker } from 'material-ui-pickers';
@@ -11,6 +11,7 @@ import classNames from 'classnames';
 import './createEventModalContent.scss';
 import Axios from 'axios';
 import { useStateValue } from '../../Store/Store';
+import { IStyles } from '../../shared/models/styles.model';
 
 const style = (theme: Theme): IStyles => ({
     header: {

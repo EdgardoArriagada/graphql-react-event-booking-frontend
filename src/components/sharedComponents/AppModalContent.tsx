@@ -1,6 +1,7 @@
 import React from 'react';
 import { Theme, withStyles, WithStyles } from '@material-ui/core';
-import { appClasses, IStyles } from '../../shared/styles/styles';
+import { appClasses } from '../../shared/styles/styles';
+import { IStyles } from '../../shared/models/styles.model';
 
 const style = (theme: Theme): IStyles => ({
     paper: {

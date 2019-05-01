@@ -12,11 +12,12 @@ import {
     Button,
 } from '@material-ui/core';
 import { appClasses } from '../../../shared/styles/styles';
-import { Create } from '@material-ui/icons';
+import { Create, Delete } from '@material-ui/icons';
 import classNames from 'classnames';
 import { useStateValue } from '../../../Store/Store';
 import { IStyles } from '../../../shared/models/styles.model';
 import { IBooking } from '../../../shared/models/booking.model';
+import Axios from 'axios';
 
 const style = (theme: Theme): IStyles => ({
     card: { ...appClasses.card },
@@ -52,19 +53,69 @@ type PropsWithStyles = Props &
     WithStyles<'card' | 'cardContent' | 'cardHeader' | 'cardContentItem' | 'cardDescription' | 'cardActions'>;
 
 const BookingItem: React.SFC<PropsWithStyles> = ({ classes, ...props }: PropsWithStyles) => {
-    const { AuthState } = useStateValue();
+    const { AuthState, BookingsDispatch } = useStateValue();
     const { booking } = props;
     const { event } = booking;
+    const userLoggedIn = Boolean(AuthState.token);
     const isThisUser = AuthState.userId === booking.event.creator._id;
+    function deleteBookingHandler() {
+        if (!userLoggedIn) {
+            alert('you should log in to cancel an event');
+            return;
+        }
+        const requestBody = {
+            query: `mutation {
+                cancelBooking(bookingId: "${booking._id}") {
+                  _id
+                  title
+                }
+              }`,
+        };
+        BookingsDispatch({ type: 'CANCEL_BOOKINGS_PENDING' });
+        Axios({
+            url: 'http://localhost:3000/graphql',
+            method: 'POST',
+            data: requestBody,
+            headers: {
+                'Content-Type': 'application/json',
+                Authorization: 'Bearer ' + AuthState.token,
+            },
+        })
+            .then(res => {
+                if (res.status !== 200 && res.status !== 201) {
+                    throw new Error('Failed!');
+                }
+                if (res.data) {
+                    return res.data.data;
+                }
+            })
+            .then(resData => {
+                BookingsDispatch({ type: 'CANCEL_BOOKINGS_FULFILLED', bookingId: booking._id });
+
+                console.log(resData);
+            })
+            .catch(err => {
+                BookingsDispatch({ type: 'CANCEL_BOOKINGS_REJECTED' });
+
+                console.log(err);
+            });
+    }
     return (
         <Card className={classes.card}>
             <CardHeader
                 className={classes.cardHeader}
                 title={event.title}
                 action={
-                    <IconButton aria-label="Edit">
-                        <Create fontSize="small" />
-                    </IconButton>
+                    <React.Fragment>
+                        {isThisUser && (
+                            <IconButton aria-label="Edit">
+                                <Create fontSize="small" />
+                            </IconButton>
+                        )}
+                        <IconButton aria-label="Delete" onClick={deleteBookingHandler}>
+                            <Delete fontSize="small" />
+                        </IconButton>
+                    </React.Fragment>
                 }
             />
             <CardContent className={classes.cardContent}>

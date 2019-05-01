@@ -4,13 +4,9 @@ import { withStyles, WithStyles, Theme } from '@material-ui/core';
 import { useStateValue } from '../../../Store/Store';
 import { IStyles } from '../../../shared/models/styles.model';
 
-const style = (theme: Theme): IStyles => ({
-    list: {
-        listStyle: 'none',
-    },
-});
+const style = (theme: Theme): IStyles => ({});
 
-type PropsWithStyles = Props & WithStyles<'list'>;
+type PropsWithStyles = Props & WithStyles<''>;
 
 const BookingsList: React.SFC<PropsWithStyles> = ({ classes }: PropsWithStyles) => {
     const { BookingsState } = useStateValue();
@@ -18,7 +14,7 @@ const BookingsList: React.SFC<PropsWithStyles> = ({ classes }: PropsWithStyles) 
         <BookingItem booking={booking} key={booking._id} />
     ));
 
-    return <section className={classes.list}>{BookingsList}</section>;
+    return <section>{BookingsList}</section>;
 };
 
 type Props = {};

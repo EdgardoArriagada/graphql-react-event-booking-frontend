@@ -82,7 +82,7 @@ const EventsPage: React.SFC<PropsWithStyles> = ({ classes }: PropsWithStyles) =>
     }
 
     return (
-        <div className="events-page">
+        <div className="events-page app-centered-page">
             {Boolean(progress) && <LinearProgress variant="determinate" value={progress} />}
             {userLoggedIn && (
                 <React.Fragment>

@@ -14,3 +14,10 @@ body {
 code {
     font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New', monospace;
 }
+
+.app-centered-page {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}

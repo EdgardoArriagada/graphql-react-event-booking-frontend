@@ -52,11 +52,51 @@ type PropsWithStyles = Props &
     WithStyles<'card' | 'cardContent' | 'cardHeader' | 'cardContentItem' | 'cardDescription' | 'cardActions'>;
 
 const EventItem: React.SFC<PropsWithStyles> = ({ classes, ...props }: PropsWithStyles) => {
+    function bookEventHandler() {
+        if (!userLoggedIn) {
+            alert('you should log in to book an event');
+            return;
+        }
+        const requestBody = {
+            query: `mutation {
+                bookEvent(eventId: "${event._id}") {
+                  _id
+                  createdAt
+                  updatedAt
+                }
+              }`,
+        };
+
+        Axios({
+            url: 'http://localhost:3000/graphql',
+            method: 'POST',
+            data: requestBody,
+            headers: {
+                'Content-Type': 'application/json',
+                Authorization: 'Bearer ' + AuthState.token,
+            },
+        })
+            .then(res => {
+                if (res.status !== 200 && res.status !== 201) {
+                    throw new Error('Failed!');
+                }
+                if (res.data) {
+                    return res.data.data;
+                }
+            })
+            .then(resData => {
+                console.log(resData);
+            })
+            .catch(err => {
+                console.log(err);
+            });
+    }
     const { AuthState } = useStateValue();
     const { event } = props;
+    const userLoggedIn = Boolean(AuthState.token);
     const isThisUser = AuthState.userId === event.creator._id;
     return (
-        <Card className={classes.card} key={event._id}>
+        <Card className={classes.card}>
             <CardHeader
                 className={classes.cardHeader}
                 title={event.title}
@@ -87,7 +127,7 @@ const EventItem: React.SFC<PropsWithStyles> = ({ classes, ...props }: PropsWithS
             <CardActions className={classes.cardActions}>
                 <Button variant="text">Details</Button>
                 {!isThisUser && (
-                    <Button variant="text" color="primary">
+                    <Button variant="text" color="primary" onClick={bookEventHandler}>
                         Book this
                     </Button>
                 )}

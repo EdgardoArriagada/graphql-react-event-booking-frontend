@@ -14,14 +14,17 @@ const style = (theme: Theme): IStyles => ({
     card: { ...appClasses.card },
 });
 
-type PropsWithStyles = Props & WithStyles<'list' | 'card'>;
+type PropsWithStyles = Props & WithStyles<'card'>;
 
 const EventsPage: React.SFC<PropsWithStyles> = ({ classes }: PropsWithStyles) => {
+    let _isActive: boolean = true;
     const { EventsDispatch } = useStateValue();
     // useState(1) is because 0 doesn't render the component
     const [progress, setProgress] = useState(1);
     function fetchEvents() {
-        setProgress(10);
+        if (_isActive) {
+            setProgress(10);
+        }
         const requestBody = {
             query: `query {
                 events {
@@ -37,7 +40,9 @@ const EventsPage: React.SFC<PropsWithStyles> = ({ classes }: PropsWithStyles) =>
                 }
             }`,
         };
+
         EventsDispatch({ type: 'FETCH_EVENTS_PENDING' });
+
         Axios({
             url: 'http://localhost:3000/graphql',
             method: 'POST',
@@ -55,23 +60,28 @@ const EventsPage: React.SFC<PropsWithStyles> = ({ classes }: PropsWithStyles) =>
                 }
             })
             .then(resData => {
-                console.log(resData);
                 EventsDispatch({ type: 'FETCH_EVENTS_FULFILLED', events: resData.events });
-                setProgress(100);
+                if (_isActive) {
+                    setProgress(100);
+                }
             })
             .catch(err => {
                 EventsDispatch({ type: 'FETCH_EVENTS_REJECTED' });
-                console.log(err);
             })
             .finally(() => {
                 setTimeout(() => {
-                    setProgress(0);
+                    if (_isActive) {
+                        setProgress(0);
+                    }
                 }, 300);
             });
     }
 
     useEffect(() => {
         fetchEvents();
+        return () => {
+            _isActive = false;
+        };
     }, []);
 
     const { AuthState } = useStateValue();

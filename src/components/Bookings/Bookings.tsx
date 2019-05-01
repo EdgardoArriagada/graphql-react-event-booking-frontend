@@ -14,11 +14,15 @@ const style = (theme: Theme): IStyles => ({
 type PropsWithStyles = Props & WithStyles<'list' | 'card'>;
 
 const BookingsPage: React.SFC<PropsWithStyles> = ({ classes }: PropsWithStyles) => {
+    let _isActive: boolean = true;
     const { BookingsDispatch, AuthState } = useStateValue();
     // useState(1) is because 0 doesn't render the component
     const [progress, setProgress] = useState(1);
     function fetchEvents() {
-        setProgress(10);
+        if (_isActive) {
+            setProgress(10);
+        }
+
         const requestBody = {
             query: `query {
                 bookings {
@@ -36,7 +40,6 @@ const BookingsPage: React.SFC<PropsWithStyles> = ({ classes }: PropsWithStyles) 
                 }
             }`,
         };
-        console.log(AuthState.token);
         BookingsDispatch({ type: 'FETCH_BOOKINGS_PENDING' });
         Axios({
             url: 'http://localhost:3000/graphql',
@@ -56,23 +59,28 @@ const BookingsPage: React.SFC<PropsWithStyles> = ({ classes }: PropsWithStyles) 
                 }
             })
             .then(resData => {
-                console.log(resData);
                 BookingsDispatch({ type: 'FETCH_BOOKINGS_FULFILLED', bookings: resData.bookings });
-                setProgress(100);
+                if (_isActive) {
+                    setProgress(100);
+                }
             })
             .catch(err => {
                 BookingsDispatch({ type: 'FETCH_BOOKINGS_REJECTED' });
-                console.log(err);
             })
             .finally(() => {
                 setTimeout(() => {
-                    setProgress(0);
+                    if (_isActive) {
+                        setProgress(0);
+                    }
                 }, 300);
             });
     }
 
     useEffect(() => {
         fetchEvents();
+        return () => {
+            _isActive = false;
+        };
     }, []);
 
     return (

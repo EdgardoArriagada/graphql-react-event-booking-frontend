@@ -8,7 +8,7 @@ interface ConfigVars {
 
 const configVars: ConfigVars = {
     production: {
-        BACKEND_URL: 'https://easy-event-0.herokuapp.com/',
+        BACKEND_URL: 'https://easy-event-0.herokuapp.com',
     },
     development: {
         BACKEND_URL: 'http://localhost:3000',

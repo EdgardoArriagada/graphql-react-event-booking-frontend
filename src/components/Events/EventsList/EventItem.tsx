@@ -17,6 +17,7 @@ import classNames from 'classnames';
 import { useStateValue } from '../../../Store/Store';
 import Axios from 'axios';
 import { IStyles } from '../../../shared/models/styles.model';
+import config from '../../../config';
 
 const style = (theme: Theme): IStyles => ({
     card: { ...appClasses.card },
@@ -68,7 +69,7 @@ const EventItem: React.SFC<PropsWithStyles> = ({ classes, ...props }: PropsWithS
         };
 
         Axios({
-            url: 'http://localhost:3000/graphql',
+            url: config.getGraphqlUrl(),
             method: 'POST',
             data: requestBody,
             headers: {

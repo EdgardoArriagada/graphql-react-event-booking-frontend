@@ -5,6 +5,7 @@ import axios from 'axios';
 import './auth.scss';
 import { useStateValue } from '../../Store/Store';
 import { appClasses } from '../../shared/styles/styles';
+import config from '../../config';
 
 const AuthPage = () => {
     const { AuthDispatch } = useStateValue();
@@ -42,7 +43,7 @@ const AuthPage = () => {
             `,
         };
         axios({
-            url: 'http://localhost:3000/graphql',
+            url: config.getGraphqlUrl(),
             method: 'POST',
             data: isLoginForm ? loginData : signUpData,
             headers: {

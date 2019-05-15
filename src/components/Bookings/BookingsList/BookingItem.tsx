@@ -18,6 +18,7 @@ import { useStateValue } from '../../../Store/Store';
 import { IStyles } from '../../../shared/models/styles.model';
 import { IBooking } from '../../../shared/models/booking.model';
 import Axios from 'axios';
+import config from '../../../config';
 
 const style = (theme: Theme): IStyles => ({
     card: { ...appClasses.card },
@@ -73,7 +74,7 @@ const BookingItem: React.SFC<PropsWithStyles> = ({ classes, ...props }: PropsWit
         };
         BookingsDispatch({ type: 'CANCEL_BOOKINGS_PENDING' });
         Axios({
-            url: 'http://localhost:3000/graphql',
+            url: config.getGraphqlUrl(),
             method: 'POST',
             data: requestBody,
             headers: {

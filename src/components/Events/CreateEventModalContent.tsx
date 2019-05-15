@@ -12,6 +12,7 @@ import './createEventModalContent.scss';
 import Axios from 'axios';
 import { useStateValue } from '../../Store/Store';
 import { IStyles } from '../../shared/models/styles.model';
+import config from '../../config';
 
 const style = (theme: Theme): IStyles => ({
     header: {
@@ -77,7 +78,7 @@ const CreateEventModalContent: React.SFC<PropsWithStyles> = ({ classes, ...props
         };
 
         Axios({
-            url: 'http://localhost:3000/graphql',
+            url: config.getGraphqlUrl(),
             method: 'POST',
             data: requestBody,
             headers: {

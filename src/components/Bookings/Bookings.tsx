@@ -6,6 +6,7 @@ import { useStateValue } from '../../Store/Store';
 import Axios from 'axios';
 import BookingList from './BookingsList/BookingsList';
 import { IStyles } from '../../shared/models/styles.model';
+import config from '../../config';
 
 const style = (theme: Theme): IStyles => ({
     card: { ...appClasses.card },
@@ -42,7 +43,7 @@ const BookingsPage: React.SFC<PropsWithStyles> = ({ classes }: PropsWithStyles) 
         };
         BookingsDispatch({ type: 'FETCH_BOOKINGS_PENDING' });
         Axios({
-            url: 'http://localhost:3000/graphql',
+            url: config.getGraphqlUrl(),
             method: 'POST',
             data: requestBody,
             headers: {

@@ -19,11 +19,17 @@ const getConfig = (environment: any): EnvironmentVariables => {
     return configVars[environment];
 };
 
-interface Config extends EnvironmentVariables {}
+interface Config extends EnvironmentVariables {
+    getGraphqlUrl: () => string;
+}
 
 const config: Config = {
-    // Add common config values here
     ...getConfig(process.env.REACT_APP_STAGE),
+
+    // Add common config values here
+    getGraphqlUrl: function() {
+        return this.BACKEND_URL + '/graphql';
+    },
 };
 
 export default config;

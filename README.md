@@ -1,6 +1,8 @@
 # graphql-react-event-booking-frontend
 from an awesome [academind tutorial](https://www.youtube.com/watch?v=JmFSGqbmzT4)
 
+this project is related to [graphql-react-event-booking-backend](https://github.com/EdgardoArriagada/graphql-react-event-booking-backend)
+
 WARNING: this project diverge from academind one using typescript instead of javascript, reack hooks plus context to emulate redux, instead of plain context api
 
 project created using:

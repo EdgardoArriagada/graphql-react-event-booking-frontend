@@ -115,9 +115,8 @@ const AuthPage = () => {
                 <Button variant="contained" color="primary" type="submit" style={appClasses.primaryButton}>
                     {isLoginForm ? 'Login' : 'Signup'}
                 </Button>
-                <span />
                 <Button
-                    variant="contained"
+                    variant="text"
                     color="primary"
                     type="button"
                     style={appClasses.primaryButton}

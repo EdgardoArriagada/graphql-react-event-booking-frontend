@@ -164,7 +164,7 @@ const AuthPage = () => {
                     <input type="password" id="password" ref={inputPassword} />
                 </div>
                 <Button
-                    disabled={false}
+                    disabled={0 < progress && progress < 100}
                     variant="contained"
                     color="primary"
                     type="submit"

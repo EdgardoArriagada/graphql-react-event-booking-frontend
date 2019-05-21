@@ -4,19 +4,19 @@ self.__precacheManifest = [
     "url": "/graphql-react-event-booking-frontend/static/js/runtime~main.3a25ec3f.js"
   },
   {
-    "revision": "1455f802154aefa9aed5",
-    "url": "/graphql-react-event-booking-frontend/static/js/main.94c05194.chunk.js"
+    "revision": "a40957a245f98af4cb36",
+    "url": "/graphql-react-event-booking-frontend/static/js/main.cdf778cc.chunk.js"
   },
   {
-    "revision": "2f2a4fc2573985aeca20",
-    "url": "/graphql-react-event-booking-frontend/static/js/2.e6b87b96.chunk.js"
+    "revision": "848adf011a39c3368462",
+    "url": "/graphql-react-event-booking-frontend/static/js/2.b4009c9e.chunk.js"
   },
   {
-    "revision": "1455f802154aefa9aed5",
+    "revision": "a40957a245f98af4cb36",
     "url": "/graphql-react-event-booking-frontend/static/css/main.af2318ee.chunk.css"
   },
   {
-    "revision": "6667c9afa792786b7520f3dd79053dc2",
+    "revision": "30fc0338f8979bb5ca2143d88f9167ae",
     "url": "/graphql-react-event-booking-frontend/index.html"
   }
 ];

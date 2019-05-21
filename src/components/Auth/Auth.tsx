@@ -152,7 +152,7 @@ const AuthPage = () => {
 
     return (
         <React.Fragment>
-            {Boolean(progress) && <LinearProgress variant="determinate" value={progress} />}
+            <LinearProgress variant="determinate" value={progress} style={{ opacity: progress ? 1 : 0 }} />
 
             <form className="auth-page" onSubmit={submitHandler}>
                 <div className="form-control">

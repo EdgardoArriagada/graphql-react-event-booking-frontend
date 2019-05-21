@@ -6,14 +6,22 @@ import './auth.scss';
 import { useStateValue } from '../../Store/Store';
 import { appClasses } from '../../shared/styles/styles';
 import config from '../../config';
+import AppSnackbar from '../sharedComponents/AppSnackbar';
+
+type LoginStatus = 'PRISTINE' | 'ERROR' | 'WRONG_CREDENTIALS';
 
 const AuthPage = () => {
     const { AuthDispatch } = useStateValue();
 
     const [isLoginForm, setIsLogInForm] = useState(true);
+    const [loginState, setLoginState] = useState('PRISTINE' as LoginStatus);
+
     const inputEmail = useRef({} as HTMLInputElement);
     const inputPassword = useRef({} as HTMLInputElement);
+
     const submitHandler = (event: React.FormEvent<HTMLFormElement>) => {
+        setLoginState('PRISTINE'); //important as snackbar appear only when state changes
+
         event.preventDefault();
         const email = inputEmail.current.value.trim();
         const password = inputPassword.current.value.trim();
@@ -52,6 +60,7 @@ const AuthPage = () => {
         })
             .then(res => {
                 if (res.status !== 200 && res.status !== 201) {
+                    setLoginState('ERROR');
                     throw new Error('Failed!');
                 }
                 if (res.data) {
@@ -59,39 +68,47 @@ const AuthPage = () => {
                 }
             })
             .then(resData => {
-                if (resData.login) {
-                    const { token, userId, tokenExpiration } = resData.login;
-                    AuthDispatch({ type: 'AUTH_LOG_IN', token, userId, tokenExpiration });
+                if (!resData.login) {
+                    setLoginState('WRONG_CREDENTIALS');
+                    return;
                 }
+                const { token, userId, tokenExpiration } = resData.login;
+                AuthDispatch({ type: 'AUTH_LOG_IN', token, userId, tokenExpiration });
             })
             .catch(err => {
                 console.log(err);
             });
     };
+
     return (
-        <form className="auth-page" onSubmit={submitHandler}>
-            <div className="form-control">
-                <label htmlFor="email">E-mail</label>
-                <input type="email" id="email" ref={inputEmail} />
-            </div>
-            <div className="form-control">
-                <label htmlFor="password">Password</label>
-                <input type="password" id="password" ref={inputPassword} />
-            </div>
-            <Button variant="contained" color="primary" type="submit" style={appClasses.primaryButton}>
-                {isLoginForm ? 'Login' : 'Signup'}
-            </Button>
-            <span />
-            <Button
-                variant="contained"
-                color="primary"
-                type="button"
-                style={appClasses.primaryButton}
-                onClick={_ => setIsLogInForm(!isLoginForm)}
-            >
-                Switch to {isLoginForm ? 'Signup' : 'Login'}
-            </Button>
-        </form>
+        <React.Fragment>
+            {loginState === 'WRONG_CREDENTIALS' && <AppSnackbar message="Wrong credentials" />}
+            {loginState === 'ERROR' && <AppSnackbar message="Error!: Check connection or call administrator" />}
+
+            <form className="auth-page" onSubmit={submitHandler}>
+                <div className="form-control">
+                    <label htmlFor="email">E-mail</label>
+                    <input type="email" id="email" ref={inputEmail} />
+                </div>
+                <div className="form-control">
+                    <label htmlFor="password">Password</label>
+                    <input type="password" id="password" ref={inputPassword} />
+                </div>
+                <Button variant="contained" color="primary" type="submit" style={appClasses.primaryButton}>
+                    {isLoginForm ? 'Login' : 'Signup'}
+                </Button>
+                <span />
+                <Button
+                    variant="contained"
+                    color="primary"
+                    type="button"
+                    style={appClasses.primaryButton}
+                    onClick={_ => setIsLogInForm(!isLoginForm)}
+                >
+                    Switch to {isLoginForm ? 'Signup' : 'Login'}
+                </Button>
+            </form>
+        </React.Fragment>
     );
 };
 

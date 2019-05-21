@@ -12,13 +12,14 @@ const style = (theme: Theme): IStyles => ({
 type Props = {
     message: string;
     duration?: number; // in seconds
+    centered?: boolean;
 };
 
 type PropsWithStyles = Props & WithStyles<'close'>;
 
 const AppSnackbar: React.SFC<PropsWithStyles> = ({ classes, ...props }: PropsWithStyles) => {
     const [snackbarOpen, setSnackbarOpen] = useState(true);
-    const { message, duration } = props;
+    const { message, duration, centered } = props;
 
     function handleClose() {
         setSnackbarOpen(false);
@@ -37,7 +38,7 @@ const AppSnackbar: React.SFC<PropsWithStyles> = ({ classes, ...props }: PropsWit
             <Snackbar
                 anchorOrigin={{
                     vertical: 'bottom',
-                    horizontal: 'left',
+                    horizontal: centered ? 'center' : 'left',
                 }}
                 open={snackbarOpen}
                 autoHideDuration={6000}
@@ -47,15 +48,15 @@ const AppSnackbar: React.SFC<PropsWithStyles> = ({ classes, ...props }: PropsWit
                 }}
                 message={<span id="message-id">{message}</span>}
                 action={[
-                    <IconButton
+                    <Button
+                        color="secondary"
                         aria-label="Close"
                         onClick={handleClose}
-                        color="inherit"
                         className={classes.close}
                         key="close"
                     >
-                        <Close />
-                    </IconButton>,
+                        DISMISS
+                    </Button>,
                 ]}
             />
         </React.Fragment>

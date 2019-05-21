@@ -82,8 +82,10 @@ const AuthPage = () => {
 
     return (
         <React.Fragment>
-            {loginState === 'WRONG_CREDENTIALS' && <AppSnackbar message="Wrong credentials" />}
-            {loginState === 'ERROR' && <AppSnackbar message="Error!: Check connection or call administrator" />}
+            {loginState === 'WRONG_CREDENTIALS' && <AppSnackbar message="Wrong credentials" centered />}
+            {loginState === 'ERROR' && (
+                <AppSnackbar message="Error!: Check connection or call administrator" centered />
+            )}
 
             <form className="auth-page" onSubmit={submitHandler}>
                 <div className="form-control">

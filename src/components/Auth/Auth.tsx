@@ -8,24 +8,31 @@ import { appClasses } from '../../shared/styles/styles';
 import config from '../../config';
 import AppSnackbar from '../sharedComponents/AppSnackbar';
 
-type AuthFormState = 'PRISTINE' | 'ERROR' | 'LOGIN_WRONG_CREDENTIALS' | 'SIGNUP_USER_EXISTS' | 'SIGNUP_SUCCESS';
+type SnackbarState =
+    | 'PRISTINE'
+    | 'ATTEMPT_WITH_EMPTY_fORM'
+    | 'ERROR'
+    | 'LOGIN_WRONG_CREDENTIALS'
+    | 'SIGNUP_USER_EXISTS'
+    | 'SIGNUP_SUCCESS';
 
 const AuthPage = () => {
     const { AuthDispatch } = useStateValue();
 
     const [isLoginForm, setIsLogInForm] = useState(true);
-    const [authFormState, setAuthFormState] = useState('PRISTINE' as AuthFormState);
+    const [snackbarState, setSnackbarState] = useState('PRISTINE' as SnackbarState);
 
     const inputEmail = useRef({} as HTMLInputElement);
     const inputPassword = useRef({} as HTMLInputElement);
 
-    const submitHandler = (event: React.FormEvent<HTMLFormElement>) => {
-        setAuthFormState('PRISTINE'); //important as snackbar appear only when state changes
-
+    const submitHandler = async (event: React.FormEvent<HTMLFormElement>) => {
         event.preventDefault();
+        await setSnackbarState('PRISTINE'); //important as snackbar appear only when state changes
+
         const email = inputEmail.current.value.trim();
         const password = inputPassword.current.value.trim();
         if (!email || !password) {
+            await setSnackbarState('ATTEMPT_WITH_EMPTY_fORM');
             return;
         }
 
@@ -60,7 +67,7 @@ const AuthPage = () => {
         })
             .then(res => {
                 if (res.status !== 200 && res.status !== 201) {
-                    setAuthFormState('ERROR');
+                    return setSnackbarState('ERROR');
                 }
                 if (res.data) {
                     return res.data.data;
@@ -70,8 +77,7 @@ const AuthPage = () => {
                 switch (isLoginForm) {
                     case true: // is login form
                         if (!resData.login) {
-                            setAuthFormState('LOGIN_WRONG_CREDENTIALS');
-                            return;
+                            return setSnackbarState('LOGIN_WRONG_CREDENTIALS');
                         }
 
                         const { token, userId, tokenExpiration } = resData.login;
@@ -80,29 +86,36 @@ const AuthPage = () => {
 
                     case false: // is signup form
                         if (!resData.createUser) {
-                            setAuthFormState('SIGNUP_USER_EXISTS');
-                            return;
+                            return setSnackbarState('SIGNUP_USER_EXISTS');
                         }
-                        setAuthFormState('SIGNUP_SUCCESS');
-                        return;
+                        return setSnackbarState('SIGNUP_SUCCESS');
                 }
             })
             .catch(err => {
-                setAuthFormState('ERROR');
+                return setSnackbarState('ERROR');
             });
+    };
+
+    const showSnackBar = () => {
+        switch (snackbarState) {
+            case 'LOGIN_WRONG_CREDENTIALS':
+                return <AppSnackbar message="Wrong credentials" centered />;
+            case 'SIGNUP_USER_EXISTS':
+                return <AppSnackbar message="User already exists" centered />;
+            case 'SIGNUP_SUCCESS':
+                return <AppSnackbar message="User Creation have been SUCCESFULL" centered />;
+            case 'ERROR':
+                return <AppSnackbar message="Error!: Check connection or call administrator" centered />;
+            case 'ATTEMPT_WITH_EMPTY_fORM':
+                return <AppSnackbar message="Please provide both Email and Password" centered />;
+            default:
+                return <div />;
+        }
     };
 
     return (
         <React.Fragment>
-            {authFormState === 'LOGIN_WRONG_CREDENTIALS' && <AppSnackbar message="Wrong credentials" centered />}
-            {authFormState === 'SIGNUP_USER_EXISTS' && <AppSnackbar message="User already exists" centered />}
-            {authFormState === 'SIGNUP_SUCCESS' && (
-                <AppSnackbar message="User Creation have been SUCCESFULL" centered />
-            )}
-            {authFormState === 'ERROR' && (
-                <AppSnackbar message="Error!: Check connection or call administrator" centered />
-            )}
-
+            {showSnackBar()}
             <form className="auth-page" onSubmit={submitHandler}>
                 <div className="form-control">
                     <label htmlFor="email">E-mail</label>

@@ -1,4 +1,4 @@
-import React, { useRef, useState } from 'react';
+import React, { useRef, useState, useEffect } from 'react';
 import Button from '@material-ui/core/Button';
 import axios from 'axios';
 
@@ -17,6 +17,8 @@ type SnackbarState =
     | 'SIGNUP_SUCCESS';
 
 const AuthPage = () => {
+    let _isActive: boolean = true;
+
     const { AuthDispatch } = useStateValue();
 
     const [isLoginForm, setIsLogInForm] = useState(true);
@@ -27,12 +29,16 @@ const AuthPage = () => {
 
     const submitHandler = async (event: React.FormEvent<HTMLFormElement>) => {
         event.preventDefault();
-        await setSnackbarState('PRISTINE'); //important as snackbar appear only when state changes
+        if (_isActive) {
+            await setSnackbarState('PRISTINE'); //important as snackbar appear only when state changes
+        }
 
         const email = inputEmail.current.value.trim();
         const password = inputPassword.current.value.trim();
         if (!email || !password) {
-            await setSnackbarState('ATTEMPT_WITH_EMPTY_fORM');
+            if (_isActive) {
+                await setSnackbarState('ATTEMPT_WITH_EMPTY_fORM');
+            }
             return;
         }
 
@@ -67,7 +73,9 @@ const AuthPage = () => {
         })
             .then(res => {
                 if (res.status !== 200 && res.status !== 201) {
-                    return setSnackbarState('ERROR');
+                    if (_isActive) {
+                        return setSnackbarState('ERROR');
+                    }
                 }
                 if (res.data) {
                     return res.data.data;
@@ -77,22 +85,31 @@ const AuthPage = () => {
                 switch (isLoginForm) {
                     case true: // is login form
                         if (!resData.login) {
-                            return setSnackbarState('LOGIN_WRONG_CREDENTIALS');
+                            if (_isActive) {
+                                return setSnackbarState('LOGIN_WRONG_CREDENTIALS');
+                            }
                         }
-
-                        const { token, userId, tokenExpiration } = resData.login;
-                        AuthDispatch({ type: 'AUTH_LOG_IN', token, userId, tokenExpiration });
-                        return;
+                        if (_isActive) {
+                            const { token, userId, tokenExpiration } = resData.login;
+                            AuthDispatch({ type: 'AUTH_LOG_IN', token, userId, tokenExpiration });
+                            return;
+                        }
 
                     case false: // is signup form
                         if (!resData.createUser) {
-                            return setSnackbarState('SIGNUP_USER_EXISTS');
+                            if (_isActive) {
+                                return setSnackbarState('SIGNUP_USER_EXISTS');
+                            }
                         }
-                        return setSnackbarState('SIGNUP_SUCCESS');
+                        if (_isActive) {
+                            return setSnackbarState('SIGNUP_SUCCESS');
+                        }
                 }
             })
             .catch(err => {
-                return setSnackbarState('ERROR');
+                if (_isActive) {
+                    return setSnackbarState('ERROR');
+                }
             });
     };
 
@@ -113,6 +130,12 @@ const AuthPage = () => {
         }
     };
 
+    useEffect(() => {
+        return () => {
+            _isActive = false;
+        };
+    }, []);
+
     return (
         <React.Fragment>
             {showSnackBar()}
@@ -125,7 +148,13 @@ const AuthPage = () => {
                     <label htmlFor="password">Password</label>
                     <input type="password" id="password" ref={inputPassword} />
                 </div>
-                <Button variant="contained" color="primary" type="submit" style={appClasses.primaryButton}>
+                <Button
+                    disabled={false}
+                    variant="contained"
+                    color="primary"
+                    type="submit"
+                    style={appClasses.primaryButton}
+                >
                     {isLoginForm ? 'Login' : 'Signup'}
                 </Button>
                 <Button

@@ -8,19 +8,19 @@ import { appClasses } from '../../shared/styles/styles';
 import config from '../../config';
 import AppSnackbar from '../sharedComponents/AppSnackbar';
 
-type LoginStatus = 'PRISTINE' | 'ERROR' | 'WRONG_CREDENTIALS';
+type AuthFormState = 'PRISTINE' | 'ERROR' | 'LOGIN_WRONG_CREDENTIALS' | 'SIGNUP_USER_EXISTS';
 
 const AuthPage = () => {
     const { AuthDispatch } = useStateValue();
 
     const [isLoginForm, setIsLogInForm] = useState(true);
-    const [loginState, setLoginState] = useState('PRISTINE' as LoginStatus);
+    const [authFormState, setAuthFormState] = useState('PRISTINE' as AuthFormState);
 
     const inputEmail = useRef({} as HTMLInputElement);
     const inputPassword = useRef({} as HTMLInputElement);
 
     const submitHandler = (event: React.FormEvent<HTMLFormElement>) => {
-        setLoginState('PRISTINE'); //important as snackbar appear only when state changes
+        setAuthFormState('PRISTINE'); //important as snackbar appear only when state changes
 
         event.preventDefault();
         const email = inputEmail.current.value.trim();
@@ -60,7 +60,7 @@ const AuthPage = () => {
         })
             .then(res => {
                 if (res.status !== 200 && res.status !== 201) {
-                    setLoginState('ERROR');
+                    setAuthFormState('ERROR');
                     throw new Error('Failed!');
                 }
                 if (res.data) {
@@ -68,22 +68,30 @@ const AuthPage = () => {
                 }
             })
             .then(resData => {
-                if (!resData.login) {
-                    setLoginState('WRONG_CREDENTIALS');
+                if (!resData.login && isLoginForm) {
+                    setAuthFormState('LOGIN_WRONG_CREDENTIALS');
                     return;
                 }
-                const { token, userId, tokenExpiration } = resData.login;
-                AuthDispatch({ type: 'AUTH_LOG_IN', token, userId, tokenExpiration });
+                if (!resData.createUser && !isLoginForm) {
+                    setAuthFormState('SIGNUP_USER_EXISTS');
+                    return;
+                }
+                if (resData.login) {
+                    const { token, userId, tokenExpiration } = resData.login;
+                    AuthDispatch({ type: 'AUTH_LOG_IN', token, userId, tokenExpiration });
+                }
             })
             .catch(err => {
+                setAuthFormState('ERROR');
                 console.log(err);
             });
     };
 
     return (
         <React.Fragment>
-            {loginState === 'WRONG_CREDENTIALS' && <AppSnackbar message="Wrong credentials" centered />}
-            {loginState === 'ERROR' && (
+            {authFormState === 'LOGIN_WRONG_CREDENTIALS' && <AppSnackbar message="Wrong credentials" centered />}
+            {authFormState === 'SIGNUP_USER_EXISTS' && <AppSnackbar message="User already exists" centered />}
+            {authFormState === 'ERROR' && (
                 <AppSnackbar message="Error!: Check connection or call administrator" centered />
             )}
 

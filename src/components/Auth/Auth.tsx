@@ -1,5 +1,6 @@
 import React, { useRef, useState, useEffect } from 'react';
 import Button from '@material-ui/core/Button';
+import LinearProgress from '@material-ui/core/LinearProgress';
 import axios from 'axios';
 
 import './auth.scss';
@@ -23,12 +24,14 @@ const AuthPage = () => {
 
     const [isLoginForm, setIsLogInForm] = useState(true);
     const [snackbarState, setSnackbarState] = useState('PRISTINE' as SnackbarState);
+    const [progress, setProgress] = useState(0);
 
     const inputEmail = useRef({} as HTMLInputElement);
     const inputPassword = useRef({} as HTMLInputElement);
 
     const submitHandler = async (event: React.FormEvent<HTMLFormElement>) => {
         event.preventDefault();
+
         if (_isActive) {
             await setSnackbarState('PRISTINE'); //important as snackbar appear only when state changes
         }
@@ -40,6 +43,9 @@ const AuthPage = () => {
                 await setSnackbarState('ATTEMPT_WITH_EMPTY_fORM');
             }
             return;
+        }
+        if (_isActive) {
+            setProgress(10);
         }
 
         const signUpData = {
@@ -82,6 +88,7 @@ const AuthPage = () => {
                 }
             })
             .then(resData => {
+                setProgress(100);
                 switch (isLoginForm) {
                     case true: // is login form
                         if (!resData.login) {
@@ -110,6 +117,13 @@ const AuthPage = () => {
                 if (_isActive) {
                     return setSnackbarState('ERROR');
                 }
+            })
+            .finally(() => {
+                setTimeout(() => {
+                    if (_isActive) {
+                        setProgress(0);
+                    }
+                }, 300);
             });
     };
 
@@ -138,7 +152,8 @@ const AuthPage = () => {
 
     return (
         <React.Fragment>
-            {showSnackBar()}
+            {Boolean(progress) && <LinearProgress variant="determinate" value={progress} />}
+
             <form className="auth-page" onSubmit={submitHandler}>
                 <div className="form-control">
                     <label htmlFor="email">E-mail</label>
@@ -167,6 +182,8 @@ const AuthPage = () => {
                     Switch to {isLoginForm ? 'Signup' : 'Login'}
                 </Button>
             </form>
+
+            {showSnackBar()}
         </React.Fragment>
     );
 };

@@ -1,18 +1,22 @@
 import React from 'react';
 import EventItem from './EventItem';
-import { withStyles, WithStyles, Theme, Card, Typography } from '@material-ui/core';
+import { withStyles, WithStyles, Theme, Card, CardHeader } from '@material-ui/core';
 import { useStateValue } from '../../../Store/Store';
 import { IStyles } from '../../../shared/models/styles.model';
 import { appClasses } from '../../../shared/styles/styles';
 
 const style = (theme: Theme): IStyles => ({
     card: {
-        padding: '3rem',
+        padding: '3rem 0',
         ...appClasses.card,
+    },
+    cardHeader: {
+        textAlign: 'center',
+        width: '90%',
     },
 });
 
-type PropsWithStyles = Props & WithStyles<'card'>;
+type PropsWithStyles = Props & WithStyles<'card' | 'cardHeader'>;
 
 const EventsList: React.SFC<PropsWithStyles> = ({ classes }: PropsWithStyles) => {
     const { EventsState } = useStateValue();
@@ -21,7 +25,7 @@ const EventsList: React.SFC<PropsWithStyles> = ({ classes }: PropsWithStyles) =>
             EventsState.events.map((event: any) => <EventItem event={event} key={event._id} />)
         ) : (
             <Card className={classes.card}>
-                <Typography variant="h5">There are no events yet</Typography>
+                <CardHeader className={classes.cardHeader} title="There are no events yet" />
             </Card>
         );
 

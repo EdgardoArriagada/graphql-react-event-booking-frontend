@@ -50,7 +50,7 @@ const style = (theme: Theme): IStyles => ({
     },
 });
 
-type SnackbarState = 'PRISTINE' | 'NOT_IMPLEMENTED_YET' | 'ERROR';
+type SnackbarState = 'PRISTINE' | 'NOT_IMPLEMENTED_YET' | 'USER_NOT_LOGGED_IN' | 'ERROR';
 
 type PropsWithStyles = Props &
     WithStyles<'card' | 'cardContent' | 'cardHeader' | 'cardContentItem' | 'cardDescription' | 'cardActions'>;
@@ -69,9 +69,15 @@ const EventItem: React.SFC<PropsWithStyles> = ({ classes, ...props }: PropsWithS
         }
     }
 
-    function bookEventHandler() {
+    async function bookEventHandler() {
+        if (_isActive) {
+            await setSnackbarState('PRISTINE');
+        }
+
         if (!userLoggedIn) {
-            alert('you should log in to book an event');
+            if (_isActive) {
+                await setSnackbarState('USER_NOT_LOGGED_IN');
+            }
             return;
         }
         const requestBody = {
@@ -119,6 +125,8 @@ const EventItem: React.SFC<PropsWithStyles> = ({ classes, ...props }: PropsWithS
                 return <AppSnackbar message="Error!: Check connection or call administrator" />;
             case 'NOT_IMPLEMENTED_YET':
                 return <AppSnackbar message="Feature not implemented yet" />;
+            case 'USER_NOT_LOGGED_IN':
+                return <AppSnackbar message="You must log in to book this event" />;
             default:
                 return <div />;
         }

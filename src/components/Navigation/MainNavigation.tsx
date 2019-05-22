@@ -10,8 +10,9 @@ import MenuIcon from '@material-ui/icons/Menu';
 
 import './mainNavigation.scss';
 import { useStateValue } from '../../Store/Store';
-import { Toolbar, IconButton, Typography, Button, Theme, withStyles, WithStyles } from '@material-ui/core';
+import { Toolbar, Theme, withStyles, WithStyles } from '@material-ui/core';
 import { IStyles } from '../../shared/models/styles.model';
+import AppSnackbar from '../sharedComponents/AppSnackbar';
 
 const styles = (theme: Theme): IStyles => ({
     root: {
@@ -26,6 +27,8 @@ const styles = (theme: Theme): IStyles => ({
     },
 });
 
+type SnackbarState = 'PRISTINE' | 'NOT_IMPLEMENTED_YET' | 'LOGOUT_SUCCESFULL' | 'ERROR';
+
 type PropsWithStyles = Props & WithStyles<'root' | 'grow' | 'menuButton'>;
 
 const MainNavigation: React.SFC<PropsWithStyles> = ({ classes }: PropsWithStyles) => {
@@ -33,14 +36,23 @@ const MainNavigation: React.SFC<PropsWithStyles> = ({ classes }: PropsWithStyles
     const userLoggedIn = Boolean(AuthState.token);
     const [anchorEl, setAnchorEl] = useState();
     const isMenuOpen = Boolean(anchorEl);
+    const [snackbarState, setSnackbarState] = useState('PRISTINE' as SnackbarState);
 
     function handleProfileMenuOpen(event: React.MouseEvent<HTMLElement>) {
         setAnchorEl(event.currentTarget);
     }
 
-    function handleLogout() {
-        AuthDispatch({ type: 'AUTH_LOG_OUT' });
+    async function handleLogout() {
+        await setSnackbarState('PRISTINE');
+        await AuthDispatch({ type: 'AUTH_LOG_OUT' });
         closeMenu();
+        await setSnackbarState('LOGOUT_SUCCESFULL');
+    }
+
+    async function handleProfileClick() {
+        await setSnackbarState('PRISTINE');
+        closeMenu();
+        await setSnackbarState('NOT_IMPLEMENTED_YET');
     }
 
     function closeMenu() {
@@ -49,10 +61,23 @@ const MainNavigation: React.SFC<PropsWithStyles> = ({ classes }: PropsWithStyles
 
     const renderMenu = (
         <MuMenu anchorEl={anchorEl} open={isMenuOpen} onClose={closeMenu}>
-            <MuMenuItem onClick={void 0}>Profile</MuMenuItem>
+            <MuMenuItem onClick={handleProfileClick}>Profile</MuMenuItem>
             <MuMenuItem onClick={handleLogout}>Logout</MuMenuItem>
         </MuMenu>
     );
+
+    const showSnackBar = () => {
+        switch (snackbarState) {
+            case 'ERROR':
+                return <AppSnackbar message="Error!: Check connection or call administrator" />;
+            case 'NOT_IMPLEMENTED_YET':
+                return <AppSnackbar message="Feature not implemented yet" duration={3000} />;
+            case 'LOGOUT_SUCCESFULL':
+                return <AppSnackbar message="You have succesfully logout" duration={3000} />;
+            default:
+                return <div />;
+        }
+    };
 
     return (
         <React.Fragment>
@@ -77,6 +102,7 @@ const MainNavigation: React.SFC<PropsWithStyles> = ({ classes }: PropsWithStyles
                     {renderMenu}
                 </Toolbar>
             </AppBar>
+            {showSnackBar()}
         </React.Fragment>
     );
 };

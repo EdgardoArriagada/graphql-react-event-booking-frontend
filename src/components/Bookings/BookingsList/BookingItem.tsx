@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import {
     Card,
     Typography,
@@ -19,6 +19,7 @@ import { IStyles } from '../../../shared/models/styles.model';
 import { IBooking } from '../../../shared/models/booking.model';
 import Axios from 'axios';
 import config from '../../../config';
+import AppSnackbar from '../../sharedComponents/AppSnackbar';
 
 const style = (theme: Theme): IStyles => ({
     card: { ...appClasses.card },
@@ -50,10 +51,16 @@ const style = (theme: Theme): IStyles => ({
     },
 });
 
+type SnackbarState = 'PRISTINE' | 'NOT_IMPLEMENTED_YET' | 'ERROR';
+
 type PropsWithStyles = Props &
     WithStyles<'card' | 'cardContent' | 'cardHeader' | 'cardContentItem' | 'cardDescription' | 'cardActions'>;
 
 const BookingItem: React.SFC<PropsWithStyles> = ({ classes, ...props }: PropsWithStyles) => {
+    let _isActive: boolean = true;
+    const [progress, setProgress] = useState(0);
+    const [snackbarState, setSnackbarState] = useState('PRISTINE' as SnackbarState);
+
     const { AuthState, BookingsDispatch } = useStateValue();
     const { booking } = props;
     const { event } = booking;
@@ -101,44 +108,76 @@ const BookingItem: React.SFC<PropsWithStyles> = ({ classes, ...props }: PropsWit
                 console.log(err);
             });
     }
+
+    async function handleDetailsClick() {
+        if (_isActive) {
+            await setSnackbarState('PRISTINE');
+        }
+        if (_isActive) {
+            await setSnackbarState('NOT_IMPLEMENTED_YET');
+        }
+    }
+
+    useEffect(() => {
+        return () => {
+            _isActive = false;
+        };
+    }, []);
+
+    const showSnackBar = () => {
+        switch (snackbarState) {
+            case 'ERROR':
+                return <AppSnackbar message="Error!: Check connection or call administrator" />;
+            case 'NOT_IMPLEMENTED_YET':
+                return <AppSnackbar message="Feature not implemented yet" />;
+            default:
+                return <div />;
+        }
+    };
+
     return (
-        <Card className={classes.card}>
-            <CardHeader
-                className={classes.cardHeader}
-                title={event.title}
-                action={
-                    <React.Fragment>
-                        {isThisUser && (
-                            <IconButton aria-label="Edit">
-                                <Create fontSize="small" />
+        <React.Fragment>
+            <Card className={classes.card}>
+                <CardHeader
+                    className={classes.cardHeader}
+                    title={event.title}
+                    action={
+                        <React.Fragment>
+                            {isThisUser && (
+                                <IconButton aria-label="Edit">
+                                    <Create fontSize="small" />
+                                </IconButton>
+                            )}
+                            <IconButton aria-label="Delete" onClick={deleteBookingHandler}>
+                                <Delete fontSize="small" />
                             </IconButton>
-                        )}
-                        <IconButton aria-label="Delete" onClick={deleteBookingHandler}>
-                            <Delete fontSize="small" />
-                        </IconButton>
-                    </React.Fragment>
-                }
-            />
-            <CardContent className={classes.cardContent}>
-                <span className={classNames(classes.cardContentItem, classes.cardDescription)}>
-                    <Typography variant="body1" gutterBottom>
-                        {event.description}
-                    </Typography>
-                    <Typography variant="caption" gutterBottom>
-                        {new Date(event.date).toLocaleString()}
-                    </Typography>
-                    <Typography variant="h6">{event.price} USD </Typography>
-                </span>
-                {isThisUser && (
-                    <span className={classes.cardContentItem}>
-                        <Typography variant="caption">You are the owner of this event</Typography>
+                        </React.Fragment>
+                    }
+                />
+                <CardContent className={classes.cardContent}>
+                    <span className={classNames(classes.cardContentItem, classes.cardDescription)}>
+                        <Typography variant="body1" gutterBottom>
+                            {event.description}
+                        </Typography>
+                        <Typography variant="caption" gutterBottom>
+                            {new Date(event.date).toLocaleString()}
+                        </Typography>
+                        <Typography variant="h6">{event.price} USD </Typography>
                     </span>
-                )}
-            </CardContent>
-            <CardActions className={classes.cardActions}>
-                <Button variant="text">Details</Button>
-            </CardActions>
-        </Card>
+                    {isThisUser && (
+                        <span className={classes.cardContentItem}>
+                            <Typography variant="caption">You are the owner of this event</Typography>
+                        </span>
+                    )}
+                </CardContent>
+                <CardActions className={classes.cardActions}>
+                    <Button onClick={handleDetailsClick} variant="text">
+                        Details
+                    </Button>
+                </CardActions>
+            </Card>
+            {showSnackBar()}
+        </React.Fragment>
     );
 };
 

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import {
     Card,
     Typography,
@@ -18,6 +18,8 @@ import { useStateValue } from '../../../Store/Store';
 import Axios from 'axios';
 import { IStyles } from '../../../shared/models/styles.model';
 import config from '../../../config';
+import AppSnackbar from '../../sharedComponents/AppSnackbar';
+import LinearProgress from '@material-ui/core/LinearProgress';
 
 const style = (theme: Theme): IStyles => ({
     card: { ...appClasses.card },
@@ -49,15 +51,41 @@ const style = (theme: Theme): IStyles => ({
     },
 });
 
+type SnackbarState = 'PRISTINE' | 'NOT_IMPLEMENTED_YET' | 'USER_NOT_LOGGED_IN' | 'ERROR';
+
 type PropsWithStyles = Props &
     WithStyles<'card' | 'cardContent' | 'cardHeader' | 'cardContentItem' | 'cardDescription' | 'cardActions'>;
 
 const EventItem: React.SFC<PropsWithStyles> = ({ classes, ...props }: PropsWithStyles) => {
-    function bookEventHandler() {
+    let _isActive: boolean = true;
+    const [progress, setProgress] = useState(0);
+    const [snackbarState, setSnackbarState] = useState('PRISTINE' as SnackbarState);
+
+    async function detailsHandler() {
+        if (_isActive) {
+            await setSnackbarState('PRISTINE');
+        }
+        if (_isActive) {
+            await setSnackbarState('NOT_IMPLEMENTED_YET');
+        }
+    }
+
+    async function bookEventHandler() {
+        if (_isActive) {
+            await setSnackbarState('PRISTINE');
+        }
+
         if (!userLoggedIn) {
-            alert('you should log in to book an event');
+            if (_isActive) {
+                await setSnackbarState('USER_NOT_LOGGED_IN');
+            }
             return;
         }
+
+        if (_isActive) {
+            setProgress(10);
+        }
+
         const requestBody = {
             query: `mutation {
                 bookEvent(eventId: "${event._id}") {
@@ -86,54 +114,99 @@ const EventItem: React.SFC<PropsWithStyles> = ({ classes, ...props }: PropsWithS
                 }
             })
             .then(resData => {
-                console.log(resData);
+                if (_isActive) {
+                    setProgress(100);
+                }
             })
             .catch(err => {
                 console.log(err);
+            })
+            .finally(() => {
+                if (_isActive) {
+                    setProgress(0);
+                }
             });
     }
     const { AuthState } = useStateValue();
     const { event } = props;
     const userLoggedIn = Boolean(AuthState.token);
     const isThisUser = AuthState.userId === event.creator._id;
+
+    const showSnackBar = () => {
+        switch (snackbarState) {
+            case 'ERROR':
+                return <AppSnackbar message="Error!: Check connection or call administrator" />;
+            case 'NOT_IMPLEMENTED_YET':
+                return <AppSnackbar message="Feature not implemented yet" />;
+            case 'USER_NOT_LOGGED_IN':
+                return <AppSnackbar message="You must log in to book this event" />;
+            default:
+                return <div />;
+        }
+    };
+
+    useEffect(() => {
+        return () => {
+            _isActive = false;
+        };
+    }, []);
+
     return (
-        <Card className={classes.card}>
-            <CardHeader
-                className={classes.cardHeader}
-                title={event.title}
-                action={
-                    isThisUser && (
-                        <IconButton aria-label="Edit">
-                            <Create fontSize="small" />
-                        </IconButton>
-                    )
-                }
+        <React.Fragment>
+            <LinearProgress
+                variant="determinate"
+                value={progress}
+                style={{ opacity: progress ? 1 : 0 }}
+                className={classes.card}
             />
-            <CardContent className={classes.cardContent}>
-                <span className={classNames(classes.cardContentItem, classes.cardDescription)}>
-                    <Typography variant="body1" gutterBottom>
-                        {event.description}
-                    </Typography>
-                    <Typography variant="caption" gutterBottom>
-                        {new Date(event.date).toLocaleString()}
-                    </Typography>
-                    <Typography variant="h6">{event.price} USD </Typography>
-                </span>
-                {isThisUser && (
-                    <span className={classes.cardContentItem}>
-                        <Typography variant="caption">You are the owner of this event</Typography>
+
+            <Card className={classes.card}>
+                <CardHeader
+                    className={classes.cardHeader}
+                    title={event.title}
+                    action={
+                        isThisUser && (
+                            <IconButton aria-label="Edit">
+                                <Create fontSize="small" />
+                            </IconButton>
+                        )
+                    }
+                />
+                <CardContent className={classes.cardContent}>
+                    <span className={classNames(classes.cardContentItem, classes.cardDescription)}>
+                        <Typography variant="body1" gutterBottom>
+                            {event.description}
+                        </Typography>
+                        <Typography variant="caption" gutterBottom>
+                            {new Date(event.date).toLocaleString()}
+                        </Typography>
+                        <Typography variant="h6">{event.price} USD </Typography>
                     </span>
-                )}
-            </CardContent>
-            <CardActions className={classes.cardActions}>
-                <Button variant="text">Details</Button>
-                {!isThisUser && (
-                    <Button variant="text" color="primary" onClick={bookEventHandler}>
-                        Book this
+                    {isThisUser && (
+                        <span className={classes.cardContentItem}>
+                            <Typography variant="caption">You are the owner of this event</Typography>
+                        </span>
+                    )}
+                </CardContent>
+                <CardActions className={classes.cardActions}>
+                    <Button variant="text" onClick={detailsHandler}>
+                        Details
                     </Button>
-                )}
-            </CardActions>
-        </Card>
+                    {!isThisUser && (
+                        <Button
+                            variant="text"
+                            color="primary"
+                            onClick={bookEventHandler}
+                            disabled={0 < progress && progress < 100}
+                        >
+                            Book this
+                        </Button>
+                    )}
+                </CardActions>
+            </Card>
+
+            {showSnackBar()}
+        </React.Fragment>
     );
 };
 

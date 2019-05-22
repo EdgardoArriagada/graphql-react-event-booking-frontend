@@ -19,6 +19,7 @@ import Axios from 'axios';
 import { IStyles } from '../../../shared/models/styles.model';
 import config from '../../../config';
 import AppSnackbar from '../../sharedComponents/AppSnackbar';
+import LinearProgress from '@material-ui/core/LinearProgress';
 
 const style = (theme: Theme): IStyles => ({
     card: { ...appClasses.card },
@@ -57,7 +58,7 @@ type PropsWithStyles = Props &
 
 const EventItem: React.SFC<PropsWithStyles> = ({ classes, ...props }: PropsWithStyles) => {
     let _isActive: boolean = true;
-
+    const [progress, setProgress] = useState(0);
     const [snackbarState, setSnackbarState] = useState('PRISTINE' as SnackbarState);
 
     async function detailsHandler() {
@@ -80,6 +81,11 @@ const EventItem: React.SFC<PropsWithStyles> = ({ classes, ...props }: PropsWithS
             }
             return;
         }
+
+        if (_isActive) {
+            setProgress(10);
+        }
+
         const requestBody = {
             query: `mutation {
                 bookEvent(eventId: "${event._id}") {
@@ -108,10 +114,17 @@ const EventItem: React.SFC<PropsWithStyles> = ({ classes, ...props }: PropsWithS
                 }
             })
             .then(resData => {
-                console.log(resData);
+                if (_isActive) {
+                    setProgress(100);
+                }
             })
             .catch(err => {
                 console.log(err);
+            })
+            .finally(() => {
+                if (_isActive) {
+                    setProgress(0);
+                }
             });
     }
     const { AuthState } = useStateValue();
@@ -140,6 +153,13 @@ const EventItem: React.SFC<PropsWithStyles> = ({ classes, ...props }: PropsWithS
 
     return (
         <React.Fragment>
+            <LinearProgress
+                variant="determinate"
+                value={progress}
+                style={{ opacity: progress ? 1 : 0 }}
+                className={classes.card}
+            />
+
             <Card className={classes.card}>
                 <CardHeader
                     className={classes.cardHeader}
@@ -173,7 +193,12 @@ const EventItem: React.SFC<PropsWithStyles> = ({ classes, ...props }: PropsWithS
                         Details
                     </Button>
                     {!isThisUser && (
-                        <Button variant="text" color="primary" onClick={bookEventHandler}>
+                        <Button
+                            variant="text"
+                            color="primary"
+                            onClick={bookEventHandler}
+                            disabled={0 < progress && progress < 100}
+                        >
                             Book this
                         </Button>
                     )}

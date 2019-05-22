@@ -17,7 +17,6 @@ type PropsWithStyles = Props & WithStyles<'list' | 'card'>;
 const BookingsPage: React.SFC<PropsWithStyles> = ({ classes }: PropsWithStyles) => {
     let _isActive: boolean = true;
     const { BookingsDispatch, AuthState } = useStateValue();
-    // useState(1) is because 0 doesn't render the component
     const [progress, setProgress] = useState(1);
     function fetchEvents() {
         if (_isActive) {

@@ -8,6 +8,7 @@ import {
     CardContent,
     CardHeader,
     IconButton,
+    LinearProgress,
     CardActions,
     Button,
 } from '@material-ui/core';
@@ -51,7 +52,7 @@ const style = (theme: Theme): IStyles => ({
     },
 });
 
-type SnackbarState = 'PRISTINE' | 'NOT_IMPLEMENTED_YET' | 'ERROR';
+type SnackbarState = 'PRISTINE' | 'NOT_IMPLEMENTED_YET' | 'ERROR' | 'CANCEL_BOOKING_SUCCESSFUL';
 
 type PropsWithStyles = Props &
     WithStyles<'card' | 'cardContent' | 'cardHeader' | 'cardContentItem' | 'cardDescription' | 'cardActions'>;
@@ -66,10 +67,17 @@ const BookingItem: React.SFC<PropsWithStyles> = ({ classes, ...props }: PropsWit
     const { event } = booking;
     const userLoggedIn = Boolean(AuthState.token);
     const isThisUser = AuthState.userId === booking.event.creator._id;
-    function deleteBookingHandler() {
+    async function deleteBookingHandler() {
         if (!userLoggedIn) {
+            // shouldn't occur
             alert('you should log in to cancel an event');
             return;
+        }
+        if (_isActive) {
+            await setSnackbarState('PRISTINE');
+        }
+        if (_isActive) {
+            setProgress(10);
         }
         const requestBody = {
             query: `mutation {
@@ -99,13 +107,24 @@ const BookingItem: React.SFC<PropsWithStyles> = ({ classes, ...props }: PropsWit
             })
             .then(resData => {
                 BookingsDispatch({ type: 'CANCEL_BOOKINGS_FULFILLED', bookingId: booking._id });
-
-                console.log(resData);
+                if (_isActive) {
+                    setProgress(100);
+                }
+                if (_isActive) {
+                    return setSnackbarState('CANCEL_BOOKING_SUCCESSFUL');
+                }
             })
             .catch(err => {
                 BookingsDispatch({ type: 'CANCEL_BOOKINGS_REJECTED' });
 
-                console.log(err);
+                if (_isActive) {
+                    return setSnackbarState('ERROR');
+                }
+            })
+            .finally(() => {
+                if (_isActive) {
+                    setProgress(0);
+                }
             });
     }
 
@@ -130,6 +149,8 @@ const BookingItem: React.SFC<PropsWithStyles> = ({ classes, ...props }: PropsWit
                 return <AppSnackbar message="Error!: Check connection or call administrator" />;
             case 'NOT_IMPLEMENTED_YET':
                 return <AppSnackbar message="Feature not implemented yet" />;
+            case 'CANCEL_BOOKING_SUCCESSFUL':
+                return <AppSnackbar message="Event have been cancelled successfully" />;
             default:
                 return <div />;
         }
@@ -137,6 +158,12 @@ const BookingItem: React.SFC<PropsWithStyles> = ({ classes, ...props }: PropsWit
 
     return (
         <React.Fragment>
+            <LinearProgress
+                variant="determinate"
+                value={progress}
+                style={{ opacity: progress ? 1 : 0 }}
+                className={classes.card}
+            />
             <Card className={classes.card}>
                 <CardHeader
                     className={classes.cardHeader}

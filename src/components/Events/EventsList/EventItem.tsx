@@ -51,7 +51,7 @@ const style = (theme: Theme): IStyles => ({
     },
 });
 
-type SnackbarState = 'PRISTINE' | 'NOT_IMPLEMENTED_YET' | 'USER_NOT_LOGGED_IN' | 'ERROR';
+type SnackbarState = 'PRISTINE' | 'NOT_IMPLEMENTED_YET' | 'USER_NOT_LOGGED_IN' | 'ERROR' | 'BOKING_SUCCESSFUL';
 
 type PropsWithStyles = Props &
     WithStyles<'card' | 'cardContent' | 'cardHeader' | 'cardContentItem' | 'cardDescription' | 'cardActions'>;
@@ -114,12 +114,19 @@ const EventItem: React.SFC<PropsWithStyles> = ({ classes, ...props }: PropsWithS
                 }
             })
             .then(resData => {
-                if (_isActive) {
-                    setProgress(100);
+                if (resData.bookEvent) {
+                    if (_isActive) {
+                        setProgress(100);
+                    }
+                    if (_isActive) {
+                        return setSnackbarState('BOKING_SUCCESSFUL');
+                    }
                 }
             })
             .catch(err => {
-                console.log(err);
+                if (_isActive) {
+                    return setSnackbarState('ERROR');
+                }
             })
             .finally(() => {
                 if (_isActive) {
@@ -140,6 +147,8 @@ const EventItem: React.SFC<PropsWithStyles> = ({ classes, ...props }: PropsWithS
                 return <AppSnackbar message="Feature not implemented yet" />;
             case 'USER_NOT_LOGGED_IN':
                 return <AppSnackbar message="You must log in to book this event" />;
+            case 'BOKING_SUCCESSFUL':
+                return <AppSnackbar message="Event booked successfully" />;
             default:
                 return <div />;
         }

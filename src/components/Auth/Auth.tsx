@@ -134,7 +134,7 @@ const AuthPage = () => {
             case 'SIGNUP_USER_EXISTS':
                 return <AppSnackbar message="User already exists" centered />;
             case 'SIGNUP_SUCCESS':
-                return <AppSnackbar message="User Creation have been SUCCESFULL" centered />;
+                return <AppSnackbar message="User Creation have been successful!" centered />;
             case 'ERROR':
                 return <AppSnackbar message="Error!: Check connection or call administrator" centered />;
             case 'ATTEMPT_WITH_EMPTY_fORM':

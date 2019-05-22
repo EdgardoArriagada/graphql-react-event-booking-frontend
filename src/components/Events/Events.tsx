@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import Button from '@material-ui/core/Button';
-import { Card, Modal, Typography, Theme, withStyles, WithStyles, LinearProgress } from '@material-ui/core';
+import { Modal, Theme, withStyles, WithStyles, LinearProgress } from '@material-ui/core';
 import { appClasses } from '../../shared/styles/styles';
 
 import '../../index.scss';
@@ -10,18 +9,25 @@ import Axios from 'axios';
 import EventsList from './EventsList/EventsList';
 import { IStyles } from '../../shared/models/styles.model';
 import config from '../../config';
+import AddIcon from '@material-ui/icons/Add';
+import Fab from '@material-ui/core/Fab';
 
 const style = (theme: Theme): IStyles => ({
     card: { ...appClasses.card },
+    fab: {
+        position: 'fixed',
+        right: '5%',
+        bottom: '2rem',
+        margin: theme.spacing.unit,
+    },
 });
 
-type PropsWithStyles = Props & WithStyles<'card'>;
+type PropsWithStyles = Props & WithStyles<'card' | 'fab'>;
 
 const EventsPage: React.SFC<PropsWithStyles> = ({ classes }: PropsWithStyles) => {
     let _isActive: boolean = true;
     const { EventsDispatch } = useStateValue();
-    // useState(1) is because 0 doesn't render the component
-    const [progress, setProgress] = useState(1);
+    const [progress, setProgress] = useState(0);
     function fetchEvents() {
         if (_isActive) {
             setProgress(10);
@@ -97,13 +103,9 @@ const EventsPage: React.SFC<PropsWithStyles> = ({ classes }: PropsWithStyles) =>
             <LinearProgress variant="determinate" value={progress} style={{ opacity: progress ? 1 : 0 }} />
             {userLoggedIn && (
                 <React.Fragment>
-                    <Card className={classes.card}>
-                        <Typography>Share your own Event!</Typography>
-
-                        <Button variant="contained" color="primary" type="button" onClick={_ => setModalOpen(true)}>
-                            Create Event
-                        </Button>
-                    </Card>
+                    <Fab className={classes.fab} color="primary" type="button" onClick={_ => setModalOpen(true)}>
+                        <AddIcon />
+                    </Fab>
                     <Modal open={isModalOpen} onClose={_ => setModalOpen(false)}>
                         <CreateEventModalContent closeModal={closeModal} fetchEvents={fetchEvents} />
                     </Modal>

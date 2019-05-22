@@ -51,7 +51,7 @@ const style = (theme: Theme): IStyles => ({
     },
 });
 
-type SnackbarState = 'PRISTINE' | 'NOT_IMPLEMENTED_YET' | 'ERROR';
+type SnackbarState = 'PRISTINE' | 'NOT_IMPLEMENTED_YET' | 'ERROR' | 'CANCEL_BOOKING_SUCCESSFUL';
 
 type PropsWithStyles = Props &
     WithStyles<'card' | 'cardContent' | 'cardHeader' | 'cardContentItem' | 'cardDescription' | 'cardActions'>;
@@ -99,13 +99,16 @@ const BookingItem: React.SFC<PropsWithStyles> = ({ classes, ...props }: PropsWit
             })
             .then(resData => {
                 BookingsDispatch({ type: 'CANCEL_BOOKINGS_FULFILLED', bookingId: booking._id });
-
-                console.log(resData);
+                if (_isActive) {
+                    setSnackbarState('CANCEL_BOOKING_SUCCESSFUL');
+                }
             })
             .catch(err => {
                 BookingsDispatch({ type: 'CANCEL_BOOKINGS_REJECTED' });
 
-                console.log(err);
+                if (_isActive) {
+                    setSnackbarState('ERROR');
+                }
             });
     }
 
@@ -130,6 +133,8 @@ const BookingItem: React.SFC<PropsWithStyles> = ({ classes, ...props }: PropsWit
                 return <AppSnackbar message="Error!: Check connection or call administrator" />;
             case 'NOT_IMPLEMENTED_YET':
                 return <AppSnackbar message="Feature not implemented yet" />;
+            case 'CANCEL_BOOKING_SUCCESSFUL':
+                return <AppSnackbar message="Event have been cancelled successfully" />;
             default:
                 return <div />;
         }

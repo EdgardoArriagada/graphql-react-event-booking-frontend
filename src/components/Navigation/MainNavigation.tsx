@@ -27,7 +27,7 @@ const styles = (theme: Theme): IStyles => ({
     },
 });
 
-type SnackbarState = 'PRISTINE' | 'NOT_IMPLEMENTED_YET' | 'LOGOUT_SUCCESFULL' | 'ERROR';
+type SnackbarState = 'PRISTINE' | 'NOT_IMPLEMENTED_YET' | 'LOGOUT_SUCCESSFUL' | 'ERROR';
 
 type PropsWithStyles = Props & WithStyles<'root' | 'grow' | 'menuButton'>;
 
@@ -46,7 +46,7 @@ const MainNavigation: React.SFC<PropsWithStyles> = ({ classes }: PropsWithStyles
         await setSnackbarState('PRISTINE');
         await AuthDispatch({ type: 'AUTH_LOG_OUT' });
         closeMenu();
-        await setSnackbarState('LOGOUT_SUCCESFULL');
+        await setSnackbarState('LOGOUT_SUCCESSFUL');
     }
 
     async function handleProfileClick() {
@@ -72,8 +72,8 @@ const MainNavigation: React.SFC<PropsWithStyles> = ({ classes }: PropsWithStyles
                 return <AppSnackbar message="Error!: Check connection or call administrator" />;
             case 'NOT_IMPLEMENTED_YET':
                 return <AppSnackbar message="Feature not implemented yet" duration={3000} />;
-            case 'LOGOUT_SUCCESFULL':
-                return <AppSnackbar message="You have succesfully logout" duration={3000} />;
+            case 'LOGOUT_SUCCESSFUL':
+                return <AppSnackbar message="You have SUCCESSFULy logout" duration={3000} />;
             default:
                 return <div />;
         }

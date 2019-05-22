@@ -18,7 +18,7 @@ export const appClasses: AppClasses = {
     card: {
         width: '30rem',
         margin: '0.5rem auto',
-        maxWidth: '80%',
+        maxWidth: '95%',
         display: 'flex',
         flexDirection: 'column',
         alignItems: 'center',

@@ -70,6 +70,15 @@ const EventItem: React.SFC<PropsWithStyles> = ({ classes, ...props }: PropsWithS
         }
     }
 
+    async function handleEdit() {
+        if (_isActive) {
+            await setSnackbarState('PRISTINE');
+        }
+        if (_isActive) {
+            await setSnackbarState('NOT_IMPLEMENTED_YET');
+        }
+    }
+
     async function bookEventHandler() {
         if (_isActive) {
             await setSnackbarState('PRISTINE');
@@ -175,7 +184,7 @@ const EventItem: React.SFC<PropsWithStyles> = ({ classes, ...props }: PropsWithS
                     title={event.title}
                     action={
                         isThisUser && (
-                            <IconButton aria-label="Edit">
+                            <IconButton aria-label="Edit" onClick={handleEdit}>
                                 <Create fontSize="small" />
                             </IconButton>
                         )

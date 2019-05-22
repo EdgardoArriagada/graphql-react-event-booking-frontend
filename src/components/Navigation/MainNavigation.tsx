@@ -73,7 +73,7 @@ const MainNavigation: React.SFC<PropsWithStyles> = ({ classes }: PropsWithStyles
             case 'NOT_IMPLEMENTED_YET':
                 return <AppSnackbar message="Feature not implemented yet" duration={3000} />;
             case 'LOGOUT_SUCCESSFUL':
-                return <AppSnackbar message="You have SUCCESSFULy logout" duration={3000} />;
+                return <AppSnackbar message="You have logout successfully" duration={3000} />;
             default:
                 return <div />;
         }

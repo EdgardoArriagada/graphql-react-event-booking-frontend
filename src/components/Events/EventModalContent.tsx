@@ -8,7 +8,7 @@ import DateFNSUtils from '@date-io/date-fns';
 import { setHours, getHours, setDayOfYear, getDayOfYear, setMinutes, getMinutes } from 'date-fns';
 import classNames from 'classnames';
 
-import './createEventModalContent.scss';
+import './eventModalContent.scss';
 import Axios from 'axios';
 import { useStateValue } from '../../Store/Store';
 import { IStyles } from '../../shared/models/styles.model';
@@ -33,7 +33,7 @@ type Props = {
 
 type PropsWithStyles = Props & WithStyles<'header' | 'content' | 'actions'>;
 
-const CreateEventModalContent: React.SFC<PropsWithStyles> = ({ classes, ...props }: PropsWithStyles) => {
+const EventModalContent: React.SFC<PropsWithStyles> = ({ classes, ...props }: PropsWithStyles) => {
     const { AuthState } = useStateValue();
     const [selectedDayOfTeYear, HandleDayOfTheYearChange] = useState(new Date());
     const [selectedTime, handleTimeChange] = useState(new Date());
@@ -125,15 +125,12 @@ const CreateEventModalContent: React.SFC<PropsWithStyles> = ({ classes, ...props
                     Create Event
                 </Typography>
 
-                <form
-                    className={classNames(classes.content, 'create-event-modal-content__form')}
-                    onSubmit={submitHandler}
-                >
-                    <FormGroup className="create-event-modal-content__title">
+                <form className={classNames(classes.content, 'event-modal-content__form')} onSubmit={submitHandler}>
+                    <FormGroup className="event-modal-content__title">
                         <TextField id="title" variant="outlined" label="Title" inputRef={inputTitle} />
                     </FormGroup>
 
-                    <FormGroup className="create-event-modal-content__description">
+                    <FormGroup className="event-modal-content__description">
                         <TextField
                             id="description"
                             variant="outlined"
@@ -142,7 +139,7 @@ const CreateEventModalContent: React.SFC<PropsWithStyles> = ({ classes, ...props
                         />
                     </FormGroup>
 
-                    <FormGroup className="create-event-modal-content__date">
+                    <FormGroup className="event-modal-content__date">
                         <MuiPickersUtilsProvider utils={DateFNSUtils}>
                             <InlineDatePicker
                                 keyboard
@@ -155,7 +152,7 @@ const CreateEventModalContent: React.SFC<PropsWithStyles> = ({ classes, ...props
                         </MuiPickersUtilsProvider>
                     </FormGroup>
 
-                    <FormGroup className="create-event-modal-content__time">
+                    <FormGroup className="event-modal-content__time">
                         <MuiPickersUtilsProvider utils={DateFNSUtils}>
                             <InlineTimePicker
                                 keyboard
@@ -168,12 +165,12 @@ const CreateEventModalContent: React.SFC<PropsWithStyles> = ({ classes, ...props
                         </MuiPickersUtilsProvider>
                     </FormGroup>
 
-                    <FormGroup className="create-event-modal-content__price">
+                    <FormGroup className="event-modal-content__price">
                         <TextField id="price" variant="outlined" label="price" inputRef={inputPrice} />
                     </FormGroup>
 
-                    <Divider className="create-event-modal-content__actions-divider" />
-                    <div className={classNames(classes.actions, 'create-event-modal-content__actions')}>
+                    <Divider className="event-modal-content__actions-divider" />
+                    <div className={classNames(classes.actions, 'event-modal-content__actions')}>
                         <Button
                             variant="text"
                             color="primary"
@@ -192,4 +189,4 @@ const CreateEventModalContent: React.SFC<PropsWithStyles> = ({ classes, ...props
     );
 };
 
-export default withStyles(style as any)(CreateEventModalContent);
+export default withStyles(style as any)(EventModalContent);

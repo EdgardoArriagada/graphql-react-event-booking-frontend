@@ -10,6 +10,7 @@ import {
     IconButton,
     CardActions,
     Button,
+    Modal,
 } from '@material-ui/core';
 import { appClasses } from '../../../shared/styles/styles';
 import { Create } from '@material-ui/icons';
@@ -20,6 +21,7 @@ import { IStyles } from '../../../shared/models/styles.model';
 import config from '../../../config';
 import AppSnackbar from '../../sharedComponents/AppSnackbar';
 import LinearProgress from '@material-ui/core/LinearProgress';
+import CreateEventModalContent from '../CreateEventModalContent';
 
 const style = (theme: Theme): IStyles => ({
     card: { ...appClasses.card },
@@ -60,17 +62,12 @@ const EventItem: React.SFC<PropsWithStyles> = ({ classes, ...props }: PropsWithS
     let _isActive: boolean = true;
     const [progress, setProgress] = useState(0);
     const [snackbarState, setSnackbarState] = useState('PRISTINE' as SnackbarState);
-
-    async function detailsHandler() {
-        if (_isActive) {
-            await setSnackbarState('PRISTINE');
-        }
-        if (_isActive) {
-            await setSnackbarState('NOT_IMPLEMENTED_YET');
-        }
+    const [isModalOpen, setModalOpen] = useState(false);
+    function closeModal() {
+        setModalOpen(false);
     }
 
-    async function handleEdit() {
+    async function detailsHandler() {
         if (_isActive) {
             await setSnackbarState('PRISTINE');
         }
@@ -184,7 +181,7 @@ const EventItem: React.SFC<PropsWithStyles> = ({ classes, ...props }: PropsWithS
                     title={event.title}
                     action={
                         isThisUser && (
-                            <IconButton aria-label="Edit" onClick={handleEdit}>
+                            <IconButton aria-label="Edit" onClick={_ => setModalOpen(true)}>
                                 <Create fontSize="small" />
                             </IconButton>
                         )
@@ -222,7 +219,9 @@ const EventItem: React.SFC<PropsWithStyles> = ({ classes, ...props }: PropsWithS
                     )}
                 </CardActions>
             </Card>
-
+            <Modal open={isModalOpen} onClose={_ => setModalOpen(false)}>
+                <CreateEventModalContent closeModal={closeModal} editId={isThisUser ? event._id : null} />
+            </Modal>
             {showSnackBar()}
         </React.Fragment>
     );

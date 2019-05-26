@@ -28,7 +28,7 @@ const style = (theme: Theme): IStyles => ({
 
 type Props = {
     closeModal: any;
-    fetchEvents: any;
+    editId?: string | null;
 };
 
 type PropsWithStyles = Props & WithStyles<'header' | 'content' | 'actions'>;

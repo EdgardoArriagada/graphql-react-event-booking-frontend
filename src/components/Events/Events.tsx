@@ -107,7 +107,7 @@ const EventsPage: React.SFC<PropsWithStyles> = ({ classes }: PropsWithStyles) =>
                         <AddIcon />
                     </Fab>
                     <Modal open={isModalOpen} onClose={_ => setModalOpen(false)}>
-                        <CreateEventModalContent closeModal={closeModal} fetchEvents={fetchEvents} />
+                        <CreateEventModalContent closeModal={closeModal} />
                     </Modal>
                 </React.Fragment>
             )}

@@ -64,8 +64,23 @@ const CreateEventModalContent: React.SFC<PropsWithStyles> = ({ classes, ...props
             throw new Error('All input must be selected');
         }
 
-        const requestBody = {
-            query: `mutation {
+        const requestBody = props.editId
+            ? {
+                  query: `mutation {
+                        modifyEvent(modifyEventInput: {_id: "${
+                            props.editId
+                        }", title: "${title}", description: "${description}",
+                        price: ${parseFloat(price)}, date: "${date}"}) {
+                            _id
+                            title
+                            description
+                            date
+                            price
+                        }
+                }`,
+              }
+            : {
+                  query: `mutation {
                 createEvent(eventInput: {title: "${title}", description: "${description}",
                 price: ${parseFloat(price)}, date: "${date}"}) {
                     _id
@@ -75,7 +90,7 @@ const CreateEventModalContent: React.SFC<PropsWithStyles> = ({ classes, ...props
                     price
                 }
             }`,
-        };
+              };
 
         Axios({
             url: config.getGraphqlUrl(),
@@ -96,7 +111,6 @@ const CreateEventModalContent: React.SFC<PropsWithStyles> = ({ classes, ...props
             })
             .then(resData => {
                 console.log(resData);
-                props.fetchEvents();
                 props.closeModal();
             })
             .catch(err => {
@@ -169,7 +183,7 @@ const CreateEventModalContent: React.SFC<PropsWithStyles> = ({ classes, ...props
                             Cancel
                         </Button>
                         <Button variant="contained" color="primary" type="submit" style={appClasses.primaryButton}>
-                            Create
+                            {props.editId ? 'Update' : 'Create'}
                         </Button>
                     </div>
                 </form>

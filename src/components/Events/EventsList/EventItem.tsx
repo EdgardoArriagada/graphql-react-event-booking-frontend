@@ -22,6 +22,7 @@ import config from '../../../config';
 import AppSnackbar from '../../sharedComponents/AppSnackbar';
 import LinearProgress from '@material-ui/core/LinearProgress';
 import EventModalContent from '../EventModalContent';
+import { IEvent } from '../../../shared/models/event.model';
 
 const style = (theme: Theme): IStyles => ({
     card: { ...appClasses.card },
@@ -220,7 +221,7 @@ const EventItem: React.SFC<PropsWithStyles> = ({ classes, ...props }: PropsWithS
                 </CardActions>
             </Card>
             <Modal open={isModalOpen} onClose={_ => setModalOpen(false)}>
-                <EventModalContent closeModal={closeModal} editId={isThisUser ? event._id : null} />
+                <EventModalContent closeModal={closeModal} eventToModify={isThisUser ? event : ({} as IEvent)} />
             </Modal>
             {showSnackBar()}
         </React.Fragment>
@@ -228,7 +229,7 @@ const EventItem: React.SFC<PropsWithStyles> = ({ classes, ...props }: PropsWithS
 };
 
 type Props = {
-    event: any;
+    event: IEvent;
     classes: any;
 };
 

@@ -1,4 +1,4 @@
-import React, { useRef, useState } from 'react';
+import React, { useState, useEffect, ChangeEvent } from 'react';
 import { Theme, withStyles, WithStyles, Typography, Divider, Button, FormGroup, TextField } from '@material-ui/core';
 import { appClasses } from '../../shared/styles/styles';
 import AppModalContent from '../sharedComponents/AppModalContent';
@@ -13,6 +13,7 @@ import Axios from 'axios';
 import { useStateValue } from '../../Store/Store';
 import { IStyles } from '../../shared/models/styles.model';
 import config from '../../config';
+import { IEvent } from '../../shared/models/event.model';
 
 const style = (theme: Theme): IStyles => ({
     header: {
@@ -28,21 +29,38 @@ const style = (theme: Theme): IStyles => ({
 
 type Props = {
     closeModal: any;
-    editId?: string | null;
+    eventToModify?: IEvent;
 };
 
 type PropsWithStyles = Props & WithStyles<'header' | 'content' | 'actions'>;
 
 const EventModalContent: React.SFC<PropsWithStyles> = ({ classes, ...props }: PropsWithStyles) => {
     const { AuthState } = useStateValue();
-    const [selectedDayOfTeYear, HandleDayOfTheYearChange] = useState(new Date());
+    const [selectedDayOfTeYear, handleDayOfTheYearChange] = useState(new Date());
     const [selectedTime, handleTimeChange] = useState(new Date());
 
-    const inputTitle = useRef({} as HTMLInputElement);
-    const inputDescription = useRef({} as HTMLInputElement);
-    const inputPrice = useRef({} as HTMLInputElement);
+    const eventToModify = props.eventToModify || ({} as IEvent);
+    const [inputTitleValue, setInputTitleValue] = useState(eventToModify.title);
+    const [inputDescriptionValue, setInputDescriptionValue] = useState(eventToModify.description);
+    const [inputPriceValue, setInputPriceValue] = useState(eventToModify.price);
 
-    function constructModifiedDate(selectedDayOfTeYear: Date, selectedTime: Date) {
+    function onChangeFunction(
+        seter: React.Dispatch<React.SetStateAction<any>>,
+        event: ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>,
+    ) {
+        seter(event.currentTarget.value);
+    }
+
+    function mapDateToSelectedDayAndSelectedTime(dateToMap: Date) {
+        handleDayOfTheYearChange(dateToMap);
+        handleTimeChange(dateToMap);
+    }
+
+    useEffect(() => {
+        eventToModify.date && mapDateToSelectedDayAndSelectedTime(new Date(eventToModify.date));
+    }, []);
+
+    function constructDate(selectedDayOfTeYear: Date, selectedTime: Date) {
         if (!selectedDayOfTeYear || !selectedTime) {
             throw new Error('Date and time must be selected');
         }
@@ -55,22 +73,23 @@ const EventModalContent: React.SFC<PropsWithStyles> = ({ classes, ...props }: Pr
 
     function submitHandler(event: React.FormEvent<HTMLFormElement>) {
         event.preventDefault();
-        const title = inputTitle.current.value.trim();
-        const description = inputDescription.current.value.trim();
-        const price = inputPrice.current.value.trim();
-        const date = constructModifiedDate(selectedDayOfTeYear, selectedTime);
-
+        const title = inputTitleValue && inputTitleValue.trim();
+        const description = inputDescriptionValue && inputDescriptionValue.trim();
+        const price = inputPriceValue && inputPriceValue.toString();
+        const date = constructDate(selectedDayOfTeYear, selectedTime);
+        console.log(typeof price);
         if (!title || !description || !price || !date) {
-            throw new Error('All input must be selected');
+            alert('All input must be selected');
+            return;
         }
 
-        const requestBody = props.editId
+        const requestBody = eventToModify._id
             ? {
                   query: `mutation {
                         modifyEvent(modifyEventInput: {_id: "${
-                            props.editId
+                            eventToModify._id
                         }", title: "${title}", description: "${description}",
-                        price: ${parseFloat(price)}, date: "${date}"}) {
+                        price: ${price}, date: "${date}"}) {
                             _id
                             title
                             description
@@ -82,7 +101,7 @@ const EventModalContent: React.SFC<PropsWithStyles> = ({ classes, ...props }: Pr
             : {
                   query: `mutation {
                 createEvent(eventInput: {title: "${title}", description: "${description}",
-                price: ${parseFloat(price)}, date: "${date}"}) {
+                price: ${price}, date: "${date}"}) {
                     _id
                     title
                     description
@@ -127,7 +146,13 @@ const EventModalContent: React.SFC<PropsWithStyles> = ({ classes, ...props }: Pr
 
                 <form className={classNames(classes.content, 'event-modal-content__form')} onSubmit={submitHandler}>
                     <FormGroup className="event-modal-content__title">
-                        <TextField id="title" variant="outlined" label="Title" inputRef={inputTitle} />
+                        <TextField
+                            id="title"
+                            variant="outlined"
+                            label="Title"
+                            value={inputTitleValue}
+                            onChange={event => onChangeFunction(setInputTitleValue, event)}
+                        />
                     </FormGroup>
 
                     <FormGroup className="event-modal-content__description">
@@ -135,7 +160,8 @@ const EventModalContent: React.SFC<PropsWithStyles> = ({ classes, ...props }: Pr
                             id="description"
                             variant="outlined"
                             label="description"
-                            inputRef={inputDescription}
+                            value={inputDescriptionValue}
+                            onChange={event => onChangeFunction(setInputDescriptionValue, event)}
                         />
                     </FormGroup>
 
@@ -146,7 +172,7 @@ const EventModalContent: React.SFC<PropsWithStyles> = ({ classes, ...props }: Pr
                                 clearable
                                 variant="outlined"
                                 label="Date"
-                                onChange={HandleDayOfTheYearChange}
+                                onChange={handleDayOfTheYearChange}
                                 value={selectedDayOfTeYear}
                             />
                         </MuiPickersUtilsProvider>
@@ -166,7 +192,13 @@ const EventModalContent: React.SFC<PropsWithStyles> = ({ classes, ...props }: Pr
                     </FormGroup>
 
                     <FormGroup className="event-modal-content__price">
-                        <TextField id="price" variant="outlined" label="price" inputRef={inputPrice} />
+                        <TextField
+                            id="price"
+                            variant="outlined"
+                            label="price"
+                            value={inputPriceValue}
+                            onChange={event => onChangeFunction(setInputPriceValue, event)}
+                        />
                     </FormGroup>
 
                     <Divider className="event-modal-content__actions-divider" />
@@ -180,7 +212,7 @@ const EventModalContent: React.SFC<PropsWithStyles> = ({ classes, ...props }: Pr
                             Cancel
                         </Button>
                         <Button variant="contained" color="primary" type="submit" style={appClasses.primaryButton}>
-                            {props.editId ? 'Update' : 'Create'}
+                            {eventToModify._id ? 'Update' : 'Create'}
                         </Button>
                     </div>
                 </form>

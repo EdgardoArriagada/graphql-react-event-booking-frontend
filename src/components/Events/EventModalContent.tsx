@@ -35,7 +35,7 @@ type Props = {
 type PropsWithStyles = Props & WithStyles<'header' | 'content' | 'actions'>;
 
 const EventModalContent: React.SFC<PropsWithStyles> = ({ classes, ...props }: PropsWithStyles) => {
-    const { AuthState } = useStateValue();
+    const { AuthState, EventsDispatch } = useStateValue();
     const [selectedDayOfTeYear, handleDayOfTheYearChange] = useState(new Date());
     const [selectedTime, handleTimeChange] = useState(new Date());
 
@@ -77,11 +77,13 @@ const EventModalContent: React.SFC<PropsWithStyles> = ({ classes, ...props }: Pr
         const description = inputDescriptionValue && inputDescriptionValue.trim();
         const price = inputPriceValue && inputPriceValue.toString();
         const date = constructDate(selectedDayOfTeYear, selectedTime);
-        console.log(typeof price);
-        if (!title || !description || !price || !date) {
+        if (!title || !description || !(price !== null && price !== undefined) || !date) {
             alert('All input must be selected');
             return;
         }
+
+        const EVENT_PENDING = eventToModify ? 'MODIFY_EVENT_PENDING' : 'CREATE_EVENT_PENDING';
+        EventsDispatch({ type: EVENT_PENDING });
 
         const requestBody = eventToModify._id
             ? {
@@ -95,6 +97,10 @@ const EventModalContent: React.SFC<PropsWithStyles> = ({ classes, ...props }: Pr
                             description
                             date
                             price
+                            creator{
+                                _id
+                                email
+                            }
                         }
                 }`,
               }
@@ -107,6 +113,10 @@ const EventModalContent: React.SFC<PropsWithStyles> = ({ classes, ...props }: Pr
                     description
                     date
                     price
+                    creator{
+                        _id
+                        email
+                    }
                 }
             }`,
               };
@@ -122,14 +132,16 @@ const EventModalContent: React.SFC<PropsWithStyles> = ({ classes, ...props }: Pr
         })
             .then(res => {
                 if (res.status !== 200 && res.status !== 201) {
-                    throw new Error('Failed!');
+                    const EVENT_REJECTED = eventToModify ? 'MODIFY_EVENT_REJECTED' : 'CREATE_EVENT_REJECTED';
+                    EventsDispatch({ type: EVENT_REJECTED });
                 }
                 if (res.data) {
                     return res.data.data;
                 }
             })
             .then(resData => {
-                console.log(resData);
+                const EVENT_FULFILLED = eventToModify ? 'MODIFY_EVENT_FULFILLED' : 'CREATE_EVENT_FULFILLED';
+                EventsDispatch({ type: EVENT_FULFILLED, event: resData.createEvent || resData.modifyEvent });
                 props.closeModal();
             })
             .catch(err => {

@@ -1,5 +1,4 @@
 # graphql-react-event-booking-frontend
-from an awesome [academind tutorial](https://www.youtube.com/watch?v=JmFSGqbmzT4)
 
 this project is related to [graphql-react-event-booking-backend](https://github.com/EdgardoArriagada/graphql-react-event-booking-backend)
 

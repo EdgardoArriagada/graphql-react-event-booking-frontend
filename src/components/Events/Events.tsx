@@ -3,7 +3,7 @@ import { Modal, Theme, withStyles, WithStyles, LinearProgress } from '@material-
 import { appClasses } from '../../shared/styles/styles';
 
 import '../../index.scss';
-import CreateEventModalContent from './CreateEventModalContent';
+import EventModalContent from './EventModalContent';
 import { useStateValue } from '../../Store/Store';
 import Axios from 'axios';
 import EventsList from './EventsList/EventsList';
@@ -107,7 +107,7 @@ const EventsPage: React.SFC<PropsWithStyles> = ({ classes }: PropsWithStyles) =>
                         <AddIcon />
                     </Fab>
                     <Modal open={isModalOpen} onClose={_ => setModalOpen(false)}>
-                        <CreateEventModalContent closeModal={closeModal} fetchEvents={fetchEvents} />
+                        <EventModalContent closeModal={closeModal} />
                     </Modal>
                 </React.Fragment>
             )}

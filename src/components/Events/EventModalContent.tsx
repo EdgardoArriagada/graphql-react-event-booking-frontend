@@ -1,4 +1,4 @@
-import React, { useRef, useState } from 'react';
+import React, { useState, useEffect, ChangeEvent } from 'react';
 import { Theme, withStyles, WithStyles, Typography, Divider, Button, FormGroup, TextField } from '@material-ui/core';
 import { appClasses } from '../../shared/styles/styles';
 import AppModalContent from '../sharedComponents/AppModalContent';
@@ -8,11 +8,12 @@ import DateFNSUtils from '@date-io/date-fns';
 import { setHours, getHours, setDayOfYear, getDayOfYear, setMinutes, getMinutes } from 'date-fns';
 import classNames from 'classnames';
 
-import './createEventModalContent.scss';
+import './eventModalContent.scss';
 import Axios from 'axios';
 import { useStateValue } from '../../Store/Store';
 import { IStyles } from '../../shared/models/styles.model';
 import config from '../../config';
+import { IEvent } from '../../shared/models/event.model';
 
 const style = (theme: Theme): IStyles => ({
     header: {
@@ -28,21 +29,38 @@ const style = (theme: Theme): IStyles => ({
 
 type Props = {
     closeModal: any;
-    fetchEvents: any;
+    eventToModify?: IEvent;
 };
 
 type PropsWithStyles = Props & WithStyles<'header' | 'content' | 'actions'>;
 
-const CreateEventModalContent: React.SFC<PropsWithStyles> = ({ classes, ...props }: PropsWithStyles) => {
+const EventModalContent: React.SFC<PropsWithStyles> = ({ classes, ...props }: PropsWithStyles) => {
     const { AuthState } = useStateValue();
-    const [selectedDayOfTeYear, HandleDayOfTheYearChange] = useState(new Date());
+    const [selectedDayOfTeYear, handleDayOfTheYearChange] = useState(new Date());
     const [selectedTime, handleTimeChange] = useState(new Date());
 
-    const inputTitle = useRef({} as HTMLInputElement);
-    const inputDescription = useRef({} as HTMLInputElement);
-    const inputPrice = useRef({} as HTMLInputElement);
+    const eventToModify = props.eventToModify || ({} as IEvent);
+    const [inputTitleValue, setInputTitleValue] = useState(eventToModify.title);
+    const [inputDescriptionValue, setInputDescriptionValue] = useState(eventToModify.description);
+    const [inputPriceValue, setInputPriceValue] = useState(eventToModify.price);
 
-    function constructModifiedDate(selectedDayOfTeYear: Date, selectedTime: Date) {
+    function onChangeFunction(
+        seter: React.Dispatch<React.SetStateAction<any>>,
+        event: ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>,
+    ) {
+        seter(event.currentTarget.value);
+    }
+
+    function mapDateToSelectedDayAndSelectedTime(dateToMap: Date) {
+        handleDayOfTheYearChange(dateToMap);
+        handleTimeChange(dateToMap);
+    }
+
+    useEffect(() => {
+        eventToModify.date && mapDateToSelectedDayAndSelectedTime(new Date(eventToModify.date));
+    }, []);
+
+    function constructDate(selectedDayOfTeYear: Date, selectedTime: Date) {
         if (!selectedDayOfTeYear || !selectedTime) {
             throw new Error('Date and time must be selected');
         }
@@ -55,19 +73,35 @@ const CreateEventModalContent: React.SFC<PropsWithStyles> = ({ classes, ...props
 
     function submitHandler(event: React.FormEvent<HTMLFormElement>) {
         event.preventDefault();
-        const title = inputTitle.current.value.trim();
-        const description = inputDescription.current.value.trim();
-        const price = inputPrice.current.value.trim();
-        const date = constructModifiedDate(selectedDayOfTeYear, selectedTime);
-
+        const title = inputTitleValue && inputTitleValue.trim();
+        const description = inputDescriptionValue && inputDescriptionValue.trim();
+        const price = inputPriceValue && inputPriceValue.toString();
+        const date = constructDate(selectedDayOfTeYear, selectedTime);
+        console.log(typeof price);
         if (!title || !description || !price || !date) {
-            throw new Error('All input must be selected');
+            alert('All input must be selected');
+            return;
         }
 
-        const requestBody = {
-            query: `mutation {
+        const requestBody = eventToModify._id
+            ? {
+                  query: `mutation {
+                        modifyEvent(modifyEventInput: {_id: "${
+                            eventToModify._id
+                        }", title: "${title}", description: "${description}",
+                        price: ${price}, date: "${date}"}) {
+                            _id
+                            title
+                            description
+                            date
+                            price
+                        }
+                }`,
+              }
+            : {
+                  query: `mutation {
                 createEvent(eventInput: {title: "${title}", description: "${description}",
-                price: ${parseFloat(price)}, date: "${date}"}) {
+                price: ${price}, date: "${date}"}) {
                     _id
                     title
                     description
@@ -75,7 +109,7 @@ const CreateEventModalContent: React.SFC<PropsWithStyles> = ({ classes, ...props
                     price
                 }
             }`,
-        };
+              };
 
         Axios({
             url: config.getGraphqlUrl(),
@@ -96,7 +130,6 @@ const CreateEventModalContent: React.SFC<PropsWithStyles> = ({ classes, ...props
             })
             .then(resData => {
                 console.log(resData);
-                props.fetchEvents();
                 props.closeModal();
             })
             .catch(err => {
@@ -111,37 +144,41 @@ const CreateEventModalContent: React.SFC<PropsWithStyles> = ({ classes, ...props
                     Create Event
                 </Typography>
 
-                <form
-                    className={classNames(classes.content, 'create-event-modal-content__form')}
-                    onSubmit={submitHandler}
-                >
-                    <FormGroup className="create-event-modal-content__title">
-                        <TextField id="title" variant="outlined" label="Title" inputRef={inputTitle} />
+                <form className={classNames(classes.content, 'event-modal-content__form')} onSubmit={submitHandler}>
+                    <FormGroup className="event-modal-content__title">
+                        <TextField
+                            id="title"
+                            variant="outlined"
+                            label="Title"
+                            value={inputTitleValue}
+                            onChange={event => onChangeFunction(setInputTitleValue, event)}
+                        />
                     </FormGroup>
 
-                    <FormGroup className="create-event-modal-content__description">
+                    <FormGroup className="event-modal-content__description">
                         <TextField
                             id="description"
                             variant="outlined"
                             label="description"
-                            inputRef={inputDescription}
+                            value={inputDescriptionValue}
+                            onChange={event => onChangeFunction(setInputDescriptionValue, event)}
                         />
                     </FormGroup>
 
-                    <FormGroup className="create-event-modal-content__date">
+                    <FormGroup className="event-modal-content__date">
                         <MuiPickersUtilsProvider utils={DateFNSUtils}>
                             <InlineDatePicker
                                 keyboard
                                 clearable
                                 variant="outlined"
                                 label="Date"
-                                onChange={HandleDayOfTheYearChange}
+                                onChange={handleDayOfTheYearChange}
                                 value={selectedDayOfTeYear}
                             />
                         </MuiPickersUtilsProvider>
                     </FormGroup>
 
-                    <FormGroup className="create-event-modal-content__time">
+                    <FormGroup className="event-modal-content__time">
                         <MuiPickersUtilsProvider utils={DateFNSUtils}>
                             <InlineTimePicker
                                 keyboard
@@ -154,12 +191,18 @@ const CreateEventModalContent: React.SFC<PropsWithStyles> = ({ classes, ...props
                         </MuiPickersUtilsProvider>
                     </FormGroup>
 
-                    <FormGroup className="create-event-modal-content__price">
-                        <TextField id="price" variant="outlined" label="price" inputRef={inputPrice} />
+                    <FormGroup className="event-modal-content__price">
+                        <TextField
+                            id="price"
+                            variant="outlined"
+                            label="price"
+                            value={inputPriceValue}
+                            onChange={event => onChangeFunction(setInputPriceValue, event)}
+                        />
                     </FormGroup>
 
-                    <Divider className="create-event-modal-content__actions-divider" />
-                    <div className={classNames(classes.actions, 'create-event-modal-content__actions')}>
+                    <Divider className="event-modal-content__actions-divider" />
+                    <div className={classNames(classes.actions, 'event-modal-content__actions')}>
                         <Button
                             variant="text"
                             color="primary"
@@ -169,7 +212,7 @@ const CreateEventModalContent: React.SFC<PropsWithStyles> = ({ classes, ...props
                             Cancel
                         </Button>
                         <Button variant="contained" color="primary" type="submit" style={appClasses.primaryButton}>
-                            Create
+                            {eventToModify._id ? 'Update' : 'Create'}
                         </Button>
                     </div>
                 </form>
@@ -178,4 +221,4 @@ const CreateEventModalContent: React.SFC<PropsWithStyles> = ({ classes, ...props
     );
 };
 
-export default withStyles(style as any)(CreateEventModalContent);
+export default withStyles(style as any)(EventModalContent);

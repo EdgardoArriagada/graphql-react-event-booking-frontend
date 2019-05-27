@@ -77,8 +77,7 @@ const EventModalContent: React.SFC<PropsWithStyles> = ({ classes, ...props }: Pr
         const description = inputDescriptionValue && inputDescriptionValue.trim();
         const price = inputPriceValue && inputPriceValue.toString();
         const date = constructDate(selectedDayOfTeYear, selectedTime);
-        console.log(typeof price);
-        if (!title || !description || !price || !date) {
+        if (!title || !description || !(price !== null && price !== undefined) || !date) {
             alert('All input must be selected');
             return;
         }

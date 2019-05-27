@@ -1,13 +1,13 @@
 {
-  "main.css": "/graphql-react-event-booking-frontend/static/css/main.6cc8f629.chunk.css",
-  "main.js": "/graphql-react-event-booking-frontend/static/js/main.afa826fb.chunk.js",
-  "main.js.map": "/graphql-react-event-booking-frontend/static/js/main.afa826fb.chunk.js.map",
+  "main.css": "/graphql-react-event-booking-frontend/static/css/main.4bdab2ff.chunk.css",
+  "main.js": "/graphql-react-event-booking-frontend/static/js/main.dd65b946.chunk.js",
+  "main.js.map": "/graphql-react-event-booking-frontend/static/js/main.dd65b946.chunk.js.map",
   "runtime~main.js": "/graphql-react-event-booking-frontend/static/js/runtime~main.3a25ec3f.js",
   "runtime~main.js.map": "/graphql-react-event-booking-frontend/static/js/runtime~main.3a25ec3f.js.map",
-  "static/js/2.e7a5fd6b.chunk.js": "/graphql-react-event-booking-frontend/static/js/2.e7a5fd6b.chunk.js",
-  "static/js/2.e7a5fd6b.chunk.js.map": "/graphql-react-event-booking-frontend/static/js/2.e7a5fd6b.chunk.js.map",
+  "static/js/2.66f87694.chunk.js": "/graphql-react-event-booking-frontend/static/js/2.66f87694.chunk.js",
+  "static/js/2.66f87694.chunk.js.map": "/graphql-react-event-booking-frontend/static/js/2.66f87694.chunk.js.map",
   "index.html": "/graphql-react-event-booking-frontend/index.html",
-  "precache-manifest.54fe00e6ff86b41127d222d81890fd02.js": "/graphql-react-event-booking-frontend/precache-manifest.54fe00e6ff86b41127d222d81890fd02.js",
+  "precache-manifest.a2381ae50b882ee3f92dda8e9819f36a.js": "/graphql-react-event-booking-frontend/precache-manifest.a2381ae50b882ee3f92dda8e9819f36a.js",
   "service-worker.js": "/graphql-react-event-booking-frontend/service-worker.js",
-  "static/css/main.6cc8f629.chunk.css.map": "/graphql-react-event-booking-frontend/static/css/main.6cc8f629.chunk.css.map"
+  "static/css/main.4bdab2ff.chunk.css.map": "/graphql-react-event-booking-frontend/static/css/main.4bdab2ff.chunk.css.map"
 }

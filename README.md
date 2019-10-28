@@ -2,8 +2,9 @@
 
 this project is related to [graphql-react-event-booking-backend](https://github.com/EdgardoArriagada/graphql-react-event-booking-backend)
 
+WARNING: THIS REPO IS JUST AN EXPERIMENT
+
 WARNING: this project diverge from academind one using typescript instead of javascript, reack hooks plus context to emulate redux, instead of plain context api.
-This repo is just an experiment.
 
 project created using:
 ```
